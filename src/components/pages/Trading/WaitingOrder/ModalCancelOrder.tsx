@@ -44,14 +44,17 @@ const ModalCancelOrder: React.FC<ModalCancelOrderProps> = ({
       </div>
       <div className="mt-8 flex flex-col gap-4">
         <button
-          className="btn-big btn-danger font-bold"
+          className="btn-big bg-black font-bold text-white duration-200 hover:drop-shadow-lg"
+          onClick={onClose}
+        >
+          Go back
+        </button>
+        <button
+          className="btn-big font-bold text-[#FF005C] duration-200 hover:text-[#A5A6F6]"
           onClick={handleDeleted}
           data-cy="yes-delete-btn"
         >
           Yes, Cancel now
-        </button>
-        <button className="btn-big btn-outlined font-bold" onClick={onClose}>
-          Go back
         </button>
       </div>
     </Modal>

@@ -169,41 +169,48 @@ export default function CreateOrder() {
             </li>
           </ul>
 
-          <span className="my-4 block text-xs text-disabled">
-            <span className="capitalize">
-              {limitOrder.action.toLowerCase()}
-            </span>
-            &nbsp;{getMainTokenHandling().token} when
-          </span>
-          <div className="flex items-center">
-            <span className="flex-auto text-lg">
-              1 {coinUnitCalculated[0]} =
-            </span>
-            <div className="relative w-48">
-              <div
-                className="absolute inset-y-0 left-0 flex cursor-pointer items-center pl-3"
-                onClick={handleSwitchCoinUnitCalculated}
-              >
-                <Icon
-                  defaultSrc={Arrow1Icon}
-                  hoverSrc={Arrow2Icon}
-                  focusSrc={Arrow3Icon}
-                  className="easy-in-out cursor-pointer duration-500 hover:-rotate-180"
-                />
-              </div>
-              <input
-                type="number"
-                name="price"
-                id="input-group-1"
-                className="h-10 p-2.5 px-12 text-right text-lg"
-                placeholder="0.0"
-                value={inputPrice ?? ''}
-                onChange={e => setInputPrice(e.target.valueAsNumber)}
-              />
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                <span className="text-xs text-[#A5A6F6]">
-                  {coinUnitCalculated[1]}
+          <div className="mt-8 flex w-full items-center gap-9">
+            <div>
+              <span className="block text-xs text-disabled">
+                <span className="capitalize">
+                  {limitOrder.action.toLowerCase()}
                 </span>
+                &nbsp;{getMainTokenHandling().token} when
+              </span>
+              <span className="flex-auto text-lg">
+                1 {coinUnitCalculated[0]} =
+              </span>
+            </div>
+            <div className="h-16 w-24 flex-auto items-center text-right text-2xl">
+              <div className="relative h-16 w-full">
+                <div
+                  className="absolute right-2.5 bottom-2.5 flex h-5 w-fit cursor-pointer items-center rounded-lg bg-white px-2"
+                  onClick={handleSwitchCoinUnitCalculated}
+                >
+                  <span className="mr-1 text-xs text-black">
+                    {coinUnitCalculated[1]}
+                  </span>
+                  <Icon
+                    defaultSrc={Arrow1Icon}
+                    hoverSrc={Arrow2Icon}
+                    focusSrc={Arrow3Icon}
+                    width={15}
+                    height={15}
+                    className="easy-in-out my-auto flex-shrink-0 cursor-pointer duration-500 hover:-rotate-180"
+                  />
+                </div>
+                <button className="absolute top-0 right-2.5 text-[0.6rem] text-[#A5A6F6]">
+                  Set to market
+                </button>
+                <input
+                  type="number"
+                  name="price"
+                  id="input-group-1"
+                  className="h-16 w-full pr-20 pt-5 text-right text-xl"
+                  placeholder="0.0"
+                  value={inputPrice ?? ''}
+                  onChange={e => setInputPrice(e.target.valueAsNumber)}
+                />
               </div>
             </div>
           </div>
