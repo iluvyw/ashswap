@@ -1,5 +1,5 @@
-import { WaitingOrder } from '@/api/models';
-import { ordersState } from '@/recoil/states/ordersState';
+import { WaitingFuture } from '@/api/models';
+import { futuresState } from '@/recoil/states/futuresState';
 import { useRecoilState } from 'recoil';
 import Modal from 'src/components/Modal';
 
@@ -11,14 +11,15 @@ const ModalCancelOrder: React.FC<ModalCancelOrderProps> = ({
   onClose,
   idSelected,
 }) => {
-  const [orders, setOrders] = useRecoilState(ordersState);
+  const [futureOrders, setFutureOrders] = useRecoilState(futuresState);
 
-  function removeItemAtIndex(arr: Array<WaitingOrder>, _id: number | string) {
+  function removeItemAtIndex(arr: Array<WaitingFuture>, _id: number | string) {
     return arr.filter(value => value.id != _id);
   }
 
   const handleDeleted = () => {
-    if (idSelected) setOrders(removeItemAtIndex(orders, idSelected));
+    if (idSelected)
+      setFutureOrders(removeItemAtIndex(futureOrders, idSelected));
     onClose();
   };
 

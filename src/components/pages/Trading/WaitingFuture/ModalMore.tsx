@@ -3,17 +3,19 @@ import Image from 'next/image';
 import { Eye2Icon, EyeSlashIcon, TextAlignRightIcon } from '@/assets';
 import { useRecoilState } from 'recoil';
 import { arrangeTheInfoState } from '@/recoil/states/arrangeTheInfo';
+import { arrangeFutureInfoState } from '@/recoil/states/arrangeFutureInfo';
 
 type ModalMoreProps = {
   onClose: () => void;
 };
 const ModalMore: React.FC<ModalMoreProps> = ({ onClose }) => {
-  const [arrangeTheInfo, setArrangeTheInfoState] =
-    useRecoilState(arrangeTheInfoState);
+  const [arrangeFutureInfo, setArrangeFutureInfo] = useRecoilState(
+    arrangeFutureInfoState
+  );
 
   const onHoverField = (_id: number | string, _isHover: boolean) => {
-    setArrangeTheInfoState({
-      items: arrangeTheInfo.items.map(value => {
+    setArrangeFutureInfo({
+      items: arrangeFutureInfo.items.map(value => {
         if (value.id == _id) {
           return { ...value, isHover: _isHover };
         }
@@ -23,8 +25,8 @@ const ModalMore: React.FC<ModalMoreProps> = ({ onClose }) => {
   };
 
   const onShowItem = (_id: number | string, _show: boolean) => {
-    setArrangeTheInfoState({
-      items: arrangeTheInfo.items.map(value => {
+    setArrangeFutureInfo({
+      items: arrangeFutureInfo.items.map(value => {
         if (value.id == _id) {
           return { ...value, show: _show, isHover: false };
         }
@@ -37,7 +39,7 @@ const ModalMore: React.FC<ModalMoreProps> = ({ onClose }) => {
     <Modal header="Arrange the information" onClose={onClose}>
       <div className="flex">
         <div className="w-1/2 border-r border-r-blackBg pr-2">
-          {arrangeTheInfo.items.map(value => (
+          {arrangeFutureInfo.items.map(value => (
             <div
               onMouseOver={() => onHoverField(value.id, true)}
               onMouseOut={() => onHoverField(value.id, false)}
@@ -56,7 +58,7 @@ const ModalMore: React.FC<ModalMoreProps> = ({ onClose }) => {
           ))}
         </div>
         <div className="w-1/2 pl-4">
-          {arrangeTheInfo.items.map(value => (
+          {arrangeFutureInfo.items.map(value => (
             <div
               onMouseOver={() => onHoverField(value.id, true)}
               onMouseOut={() => onHoverField(value.id, false)}

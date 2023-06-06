@@ -12,6 +12,7 @@ import {
   Arrow2Icon,
   Arrow3Icon,
   ArrowDownIcon,
+  ClearIcon,
   InactiveCheckbox,
 } from '@/assets';
 import { OrderType, Leverage, WaitingFuture } from '@/api/models';
@@ -24,10 +25,12 @@ export default function CreateFuture() {
   const rate = 0.0002; // 1 BNB = 0.00035 EGLD
   const entryPrice = 13422.01;
   const marketPrice = 13032.01;
+  const fluctuatingRates = [10, 25, 50, 75, 100];
 
   const [futureOrder, setFutureOrder] = useRecoilState(futureOrderValue);
   const walletBalance = useRecoilValue(userWalletBalance);
   const [tabOpening, setTabOpening] = useState<'SHORT' | 'LONG'>('LONG');
+  const [activeInput, setActiveInput] = useState<'TP' | 'SL' | null>(null);
   const [collateralSpend, setCollateralSpend] = useState<number>(0);
   const [leverage, setLeverage] = useState<Leverage>(2);
   const [inputTp, setInputTp] = useState<number | undefined>(undefined);
@@ -47,6 +50,9 @@ export default function CreateFuture() {
   function handleTabOpening() {
     setTabOpening(tabOpening === 'SHORT' ? 'LONG' : 'SHORT');
     setIsSwapped(false);
+    setInputTp(undefined);
+    setInputSl(undefined);
+    setActiveInput(null);
     setFutureOrder(futureOrder);
   }
 
@@ -125,10 +131,20 @@ export default function CreateFuture() {
 
   function toggleTpCheckbox() {
     inputTp === undefined ? setInputTp(0) : setInputTp(undefined);
+    if (activeInput === 'TP') {
+      inputSl !== undefined ? setActiveInput('SL') : setActiveInput(null);
+    } else {
+      inputTp === undefined && setActiveInput('TP');
+    }
   }
 
   function toggleSlCheckbox() {
     inputSl === undefined ? setInputSl(0) : setInputSl(undefined);
+    if (activeInput === 'SL') {
+      inputTp !== undefined ? setActiveInput('TP') : setActiveInput(null);
+    } else {
+      inputSl === undefined && setActiveInput('SL');
+    }
   }
 
   useEffect(() => {
@@ -272,7 +288,7 @@ export default function CreateFuture() {
                 }
                 className="h-16 w-24 flex-auto p-2.5 text-right text-2xl"
                 placeholder="0.0"
-                name="spend"
+                name="collateral"
               />
             </div>
             <span className="mt-2 block text-right text-disabled">
@@ -298,13 +314,18 @@ export default function CreateFuture() {
               <div
                 className={classnames(
                   'h-fit w-1/2 rounded-lg border p-2 duration-300 ease-linear hover:bg-blueBg',
-                  inputTp !== undefined
-                    ? 'border-[#5D5FEF] bg-blueBg'
-                    : 'border-transparent'
+                  activeInput === 'TP'
+                    ? 'border-[#5D5FEF]'
+                    : 'border-transparent',
+                  inputTp !== undefined && 'bg-blueBg'
                 )}
+                onClick={() => setActiveInput('TP')}
               >
                 <div
-                  onClick={toggleTpCheckbox}
+                  onClick={e => {
+                    e.stopPropagation();
+                    toggleTpCheckbox();
+                  }}
                   className="flex cursor-pointer items-center"
                 >
                   <Image
@@ -336,13 +357,18 @@ export default function CreateFuture() {
               <div
                 className={classnames(
                   'h-fit w-1/2 rounded-lg border p-2 duration-300 ease-linear hover:bg-blueBg',
-                  inputSl !== undefined
-                    ? 'border-[#5D5FEF] bg-blueBg'
-                    : 'border-transparent'
+                  activeInput === 'SL'
+                    ? 'border-[#5D5FEF]'
+                    : 'border-transparent',
+                  inputSl !== undefined && 'bg-blueBg'
                 )}
+                onClick={() => setActiveInput('SL')}
               >
                 <div
-                  onClick={toggleSlCheckbox}
+                  onClick={e => {
+                    e.stopPropagation();
+                    toggleSlCheckbox();
+                  }}
                   className="flex cursor-pointer items-center"
                 >
                   <Image
@@ -371,6 +397,36 @@ export default function CreateFuture() {
                 )}
               </div>
             </div>
+            {activeInput && (
+              <div>
+                <hr className="mt-4 mb-1" />
+                <div className="flex flex-wrap gap-1">
+                  <div className="flex cursor-pointer items-center rounded bg-blackBg p-1">
+                    <Image
+                      src={ClearIcon}
+                      alt="clear-icon"
+                      width={10}
+                      height={10}
+                    />
+                    <span className="ml-1">Clear</span>
+                  </div>
+                  {fluctuatingRates.map((rate, index) => (
+                    <div
+                      className={classnames(
+                        activeInput === 'TP' &&
+                          'bg-[#F2FCFA] text-success duration-300 ease-linear hover:bg-success hover:text-[#F2FCFA]',
+                        activeInput === 'SL' &&
+                          'bg-[#FFF2F7] text-danger duration-300 ease-linear hover:bg-danger hover:text-[#FFF2F7]',
+                        'w-10 cursor-pointer rounded p-1 text-center'
+                      )}
+                      key={index}
+                    >
+                      +{rate}%
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
