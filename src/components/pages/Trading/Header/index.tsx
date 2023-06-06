@@ -7,16 +7,35 @@ import ModalSetting from './ModalSetting';
 import SearchFiled from './SearchFiled';
 import SettingConnect from './SettingConnect';
 import styles from './styles.module.css';
+import { featureState } from '@/recoil/states/featureState';
 
 const Header = () => {
   const [isShow, setIsShow] = useRecoilState(modalSettingState);
   const setIsShowModalSearch = useSetRecoilState(modalSearchState);
+  const [feature, setFeature] = useRecoilState(featureState);
 
   return (
     <div className="2-full flex h-16 items-center justify-between">
       <div className="flex-1 ">
         <div className="flex items-center justify-between pr-7">
-          <h1 className="font-bold">Trade</h1>
+          <div className="flex items-center">
+            <h1
+              className={`${
+                feature !== 'TRADE' && 'text-disabled'
+              } mr-4 cursor-pointer font-bold duration-200 ease-linear`}
+              onClick={() => setFeature('TRADE')}
+            >
+              Trade
+            </h1>
+            <h1
+              className={`${
+                feature !== 'FUTURE' && 'text-disabled'
+              } mr-4 cursor-pointer font-bold duration-200 ease-linear`}
+              onClick={() => setFeature('FUTURE')}
+            >
+              Future
+            </h1>
+          </div>
           <button
             onClick={() => setIsShowModalSearch(true)}
             data-cy="search-btn"

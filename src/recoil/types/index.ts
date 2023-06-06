@@ -6,6 +6,15 @@ export interface LimitOrder {
   buy: SystemCurrency;
 }
 
+export interface FutureOrder {
+  action: 'LONG' | 'SHORT';
+  buy: SystemCurrency;
+  collateral: SystemCurrency;
+  leverage: 2 | 5 | 15 | 20 | 30 | 40 | 50;
+  tp?: number;
+  sl?: number;
+}
+
 export interface FavoredState {
   listFavored: PairSearched[];
   listTopSearch: PairSearched[];

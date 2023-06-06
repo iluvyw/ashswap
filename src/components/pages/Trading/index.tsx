@@ -12,6 +12,7 @@ import WaitingOrder from './WaitingOrder';
 import OrderBook from './OrderBook';
 import CreateOrder from './CreateOrder';
 import ModalSearch from './ModalSearch';
+import CreateFuture from './CreateFuture';
 
 export default function Trading() {
   const [isCollapsedOrderBook, setIsCollapsedOrderBook] =
@@ -71,6 +72,7 @@ export default function Trading() {
       </div>
       <div className="w-[360px]">
         <CreateOrder />
+        <CreateFuture />
       </div>
 
       <ModalSearch />

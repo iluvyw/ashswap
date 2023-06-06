@@ -5,7 +5,7 @@ import Collapsible from '@/components/Collapsible';
 import classnames from 'classnames';
 import { USD_FEE_ESTIMATED } from '@/api/fakeData';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { limitOrderValue, userWalletBalance } from '@/recoil/store';
+import { userWalletBalance } from '@/recoil/store';
 import {
   Arrow1Icon,
   Arrow2Icon,
@@ -22,14 +22,16 @@ import { WaitingOrder, OrderType, OrderAction } from '@/api/models';
 import { ordersState } from '@/recoil/states/ordersState';
 import { modalSearchState } from '@/recoil/states/modalSearchState';
 import { featureState } from '@/recoil/states/featureState';
+import { futureOrderValue } from '@/recoil/states/futureOrderState';
 
-export default function CreateOrder() {
+export default function CreateFuture() {
   const rate = 0.0002; // 1 BNB = 0.00035 EGLD
 
   const feature = useRecoilValue(featureState);
-  const [limitOrder, setLimitOrder] = useRecoilState(limitOrderValue);
+  const [futureOrder, setFutureOrder] = useRecoilState(futureOrderValue);
   const walletBalance = useRecoilValue(userWalletBalance);
-  const [tabOpening, setTabOpening] = useState<'SELL' | 'BUY'>('BUY');
+  const [tabOpening, setTabOpening] = useState<'SHORT' | 'LONG'>('LONG');
+  const [collateralSpend, setCollateralSpend] = useState<number>(0);
   const [inputSpend, setInputSpend] = useState<number>(0);
   const [inputBuy, setInputBuy] = useState<number>(0);
   const [inputPrice, setInputPrice] = useState<number | null>();
@@ -44,61 +46,57 @@ export default function CreateOrder() {
   }
 
   function handleTabOpening() {
-    setTabOpening(tabOpening === 'SELL' ? 'BUY' : 'SELL');
+    setTabOpening(tabOpening === 'SHORT' ? 'LONG' : 'SHORT');
     setIsSwapped(false);
-    setLimitOrder(limitOrder);
+    setFutureOrder(futureOrder);
   }
 
   function getMainTokenHandling() {
-    const state = limitOrder.action;
-    if (state === 'BUY') return limitOrder.buy;
-    return limitOrder.sell;
+    const state = futureOrder.action;
+    if (state === 'LONG') return futureOrder.action;
+    return futureOrder.action;
   }
 
   function handleQuickSetInputSpend(percent: number) {
-    handleChangeValueSpend(
-      (getBalanceByToken(limitOrder.sell.token) * percent) / 100
-    );
+    // handleChangeValueSpend(
+    //   (getBalanceByToken(futureOrder.action.token) * percent) / 100
+    // );
   }
 
   function handleSwitchCoinUnitCalculated() {
-    setCoinUnitCalculated(prev => [prev[1], prev[0]]);
-    const _rate = !isSwapped ? 1 / (inputPrice || rate) : inputPrice || rate;
-    if (tabOpening === 'BUY') {
-      setInputSpend(inputBuy * _rate);
-    } else {
-      setInputBuy(inputSpend * _rate);
-    }
-    setIsSwapped(prev => !prev);
+    // setCoinUnitCalculated(prev => [prev[1], prev[0]]);
+    // const _rate = !isSwapped ? 1 / (inputPrice || rate) : inputPrice || rate;
+    // if (tabOpening === 'BUY') {
+    //   setInputSpend(inputBuy * _rate);
+    // } else {
+    //   setInputBuy(inputSpend * _rate);
+    // }
+    // setIsSwapped(prev => !prev);
   }
 
   function handleChangeValuePrice(value: number) {
-    setInputPrice(value);
-    const _rate = isSwapped ? 1 / value : value;
-    if (tabOpening === 'BUY') {
-      setInputSpend(inputBuy * _rate);
-    } else {
-      setInputBuy(inputSpend * _rate);
-    }
+    // setInputPrice(value);
+    // const _rate = isSwapped ? 1 / value : value;
+    // if (tabOpening === 'BUY') {
+    //   setInputSpend(inputBuy * _rate);
+    // } else {
+    //   setInputBuy(inputSpend * _rate);
+    // }
   }
 
-  function handleChangeValueSpend(value: number) {
-    setInputSpend(value);
-    const _rate = isSwapped ? 1 / (inputPrice || rate) : inputPrice || rate;
-    if (tabOpening === 'BUY') setInputBuy(value / (_rate || rate));
-    else setInputBuy(value * (_rate || rate));
+  function handleChangeCollateralSpend(value: number) {
+    setCollateralSpend(value);
   }
 
   function handleChangeValueBuy(value: number) {
-    setInputBuy(value);
-    const _rate = isSwapped ? 1 / (inputPrice || rate) : inputPrice || rate;
-    if (tabOpening === 'BUY') setInputSpend(value * (_rate || rate));
-    else setInputSpend(value / (_rate || rate));
+    // setInputBuy(value);
+    // const _rate = isSwapped ? 1 / (inputPrice || rate) : inputPrice || rate;
+    // if (tabOpening === 'BUY') setInputSpend(value * (_rate || rate));
+    // else setInputSpend(value / (_rate || rate));
   }
 
   function checkDisableActionButton() {
-    if (!inputBuy || inputBuy == 0 || !inputSpend || inputSpend == 0)
-      return true;
+    if (!collateralSpend || collateralSpend == 0) return true;
     return false;
   }
 
@@ -108,18 +106,18 @@ export default function CreateOrder() {
       time: Date.now(),
       type: OrderType.LIMIT_ORDER,
       action: tabOpening as OrderAction,
-      pair: tabOpening === 'BUY' ? 'BNB-EGLD' : 'EGLD-BNB',
+      pair: tabOpening === 'LONG' ? 'BNB-EGLD' : 'EGLD-BNB',
       price: {
         token: coinUnitCalculated[1],
         value: inputPrice ?? 0.0,
       },
       amount: {
         token: 'EGLD',
-        value: tabOpening === 'BUY' ? inputBuy : inputSpend,
+        value: tabOpening === 'LONG' ? inputBuy : inputSpend,
       },
       valueUSDC: {
         token: 'BNB',
-        value: tabOpening === 'BUY' ? inputSpend : inputBuy,
+        value: tabOpening === 'LONG' ? inputSpend : inputBuy,
       },
     };
 
@@ -131,24 +129,17 @@ export default function CreateOrder() {
   }
 
   useEffect(() => {
-    const state = limitOrder.action;
-    if (state === 'BUY') {
-      setCoinUnitCalculated([limitOrder.buy.token, limitOrder.sell.token]);
-    } else setCoinUnitCalculated([limitOrder.sell.token, limitOrder.buy.token]);
-  }, [limitOrder]);
-
-  useEffect(() => {
     setInputBuy(0);
     setInputSpend(0);
   }, [tabOpening]);
 
   return (
-    <div className={`${feature !== 'TRADE' && 'hidden'}`}>
+    <div className={`${feature !== 'FUTURE' && 'hidden'}`}>
       <div className="card w-full bg-[#FDFDFF]/60">
         <ul className="flex flex-wrap gap-6 text-center text-sm font-bold uppercase">
           <li>
             <a href="#" className="active inline-block" aria-current="page">
-              Limit Order
+              Future Order
             </a>
           </li>
           <li>
@@ -175,11 +166,11 @@ export default function CreateOrder() {
                 href="#"
                 className={classnames(
                   'active flex h-8 w-full items-center justify-center rounded-md font-bold duration-300 ease-in-out',
-                  tabOpening === 'BUY' ? 'bg-success text-white' : null
+                  tabOpening === 'LONG' ? 'bg-success text-white' : null
                 )}
                 aria-current="page"
               >
-                Buy {getMainTokenHandling().token}
+                LONG {futureOrder.buy.token}
               </a>
             </li>
 
@@ -188,10 +179,10 @@ export default function CreateOrder() {
                 href="#"
                 className={classnames(
                   'flex h-8 w-full items-center justify-center rounded-md font-bold duration-300 ease-in-out',
-                  tabOpening === 'SELL' ? 'bg-danger text-white' : null
+                  tabOpening === 'SHORT' ? 'bg-danger text-white' : null
                 )}
               >
-                SELL {getMainTokenHandling().token}
+                SHORT {futureOrder.buy.token}
               </a>
             </li>
           </ul>
@@ -200,12 +191,12 @@ export default function CreateOrder() {
             <div>
               <span className="block text-xs text-disabled">
                 <span className="capitalize">
-                  {limitOrder.action.toLowerCase()}
+                  {futureOrder.action.toLowerCase()}
                 </span>
-                &nbsp;{getMainTokenHandling().token} when
+                &nbsp;{futureOrder.buy.token} when
               </span>
               <span className="flex-auto text-lg">
-                1 {coinUnitCalculated[0]} =
+                1 {futureOrder.buy.token} =
               </span>
             </div>
             <div className="h-16 w-24 flex-auto items-center text-right text-2xl">
@@ -215,7 +206,7 @@ export default function CreateOrder() {
                   onClick={handleSwitchCoinUnitCalculated}
                 >
                   <span className="mr-1 text-xs text-black">
-                    {coinUnitCalculated[1]}
+                    {futureOrder.collateral.token}
                   </span>
                   <Icon
                     defaultSrc={Arrow1Icon}
@@ -249,26 +240,31 @@ export default function CreateOrder() {
             <div className="flex gap-5">
               <div>
                 <span className="mb-4 ml-2 block text-xs text-disabled">
-                  {tabOpening === 'BUY' ? 'Spend' : 'Sell'}
+                  Collateral
                 </span>
                 <div
-                  className="focus:blueBg flex w-28 cursor-pointer items-center rounded-lg px-2 py-1 hover:bg-blackBg"
+                  className="focus:blueBg flex w-28 cursor-pointer items-center rounded-lg py-1 px-2 hover:bg-blackBg"
                   onClick={() => setIsShow(true)}
                 >
-                  {limitOrder.sell.image && (
-                    <Image src={limitOrder.sell.image} width={20} height={20} />
+                  {futureOrder.collateral.image && (
+                    <Image
+                      src={futureOrder.collateral.image}
+                      width={20}
+                      height={20}
+                    />
                   )}
                   <span className="ml-2 flex-1 text-lg font-bold">
-                    {limitOrder.sell.token}
+                    {futureOrder.collateral.token}
                   </span>
-                  <Image src={ArrowDownIcon} />
                 </div>
               </div>
               <input
                 type="number"
                 id="input-group-1"
-                value={inputSpend}
-                onChange={e => handleChangeValueSpend(e.target.valueAsNumber)}
+                value={collateralSpend}
+                onChange={e =>
+                  handleChangeCollateralSpend(e.target.valueAsNumber)
+                }
                 className="h-16 w-24 flex-auto p-2.5 text-right text-2xl"
                 placeholder="0.0"
                 name="spend"
@@ -277,11 +273,11 @@ export default function CreateOrder() {
             <span className="mt-2 block text-right text-disabled">
               Balance:{' '}
               <span className="text-blackDefault">
-                {getBalanceByToken(limitOrder.sell.token)}
+                {getBalanceByToken(futureOrder.collateral.token)}
               </span>
             </span>
 
-            <div className="relative mb-6 mt-8 flex justify-center">
+            {/* <div className="relative mb-6 mt-8 flex justify-center">
               <Image
                 src={SwapDeco}
                 className="z-10 cursor-pointer"
@@ -342,51 +338,19 @@ export default function CreateOrder() {
                   </span>
                 </div>
               </div>
-            </div>
-
-            <div className="flex gap-5">
-              <div className="duration-300 ease-in-out">
-                <span className="mb-4 ml-2 block text-xs text-disabled">
-                  {tabOpening === 'BUY' ? 'Buy' : 'Receive'}
-                </span>
-                <div
-                  className="focus:blueBg flex w-28 cursor-pointer items-center rounded-lg px-2 py-1 hover:bg-blackBg"
-                  onClick={() => setIsShow(true)}
-                >
-                  {limitOrder.buy.image && (
-                    <Image src={limitOrder.buy.image} width={20} height={20} />
-                  )}
-                  <span className="ml-2 flex-1 text-lg font-bold">
-                    {limitOrder.buy.token}
-                  </span>
-                  <Image src={ArrowDownIcon} />
-                </div>
-              </div>
-              <input
-                type="number"
-                id="input-group-1"
-                className="h-16 w-24 flex-auto p-2.5 text-right text-2xl"
-                placeholder="0.0"
-                onChange={e => handleChangeValueBuy(e.target.valueAsNumber)}
-                value={inputBuy}
-                name="buy"
-              />
-            </div>
-            <span className="mt-2 block text-right text-xs text-disabled">
-              ~ $25.215
-            </span>
+            </div> */}
 
             <button
               className={classnames(
                 'btn-big mt-4 mb-3 w-full font-bold uppercase',
-                tabOpening === 'BUY' ? 'btn-success' : 'btn-danger',
+                tabOpening === 'LONG' ? 'btn-success' : 'btn-danger',
                 checkDisableActionButton() ? 'btn-disabled' : ''
               )}
               onClick={() => handleSubmitOrder()}
               disabled={checkDisableActionButton()}
               data-cy="submit-order-btn"
             >
-              {limitOrder.action} {getMainTokenHandling().token}
+              {futureOrder.action} {futureOrder.buy.token}
             </button>
           </div>
         </div>
