@@ -43,6 +43,7 @@ export default function CreateOrder() {
 
   function handleTabOpening() {
     setTabOpening(tabOpening === 'SELL' ? 'BUY' : 'SELL');
+    setIsSwapped(false);
     setLimitOrder(limitOrder);
   }
 
