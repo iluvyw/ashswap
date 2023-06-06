@@ -33,6 +33,7 @@ export default function CreateOrder() {
   const [inputPrice, setInputPrice] = useState<number | null>();
   const [coinUnitCalculated, setCoinUnitCalculated] = useState<string[]>([]);
   const [orders, setOrders] = useRecoilState(ordersState);
+  const [isSwapped, setIsSwapped] = useState<boolean>(false);
   const setIsShow = useSetRecoilState(modalSearchState);
 
   function getBalanceByToken(token: string) {
@@ -59,18 +60,35 @@ export default function CreateOrder() {
 
   function handleSwitchCoinUnitCalculated() {
     setCoinUnitCalculated(prev => [prev[1], prev[0]]);
+    const _rate = !isSwapped ? 1 / (inputPrice || rate) : inputPrice || rate;
+    if (tabOpening === 'BUY') {
+      setInputSpend(inputBuy * _rate);
+    } else {
+      setInputBuy(inputSpend * _rate);
+    }
+    setIsSwapped(prev => !prev);
+  }
+
+  function handleChangeValuePrice(value: number) {
+    setInputPrice(value);
+    const _rate = isSwapped ? 1 / value : value;
+    if (tabOpening === 'BUY') {
+      setInputSpend(inputBuy * _rate);
+    } else {
+      setInputBuy(inputSpend * _rate);
+    }
   }
 
   function handleChangeValueSpend(value: number) {
     setInputSpend(value);
-    if (tabOpening === 'BUY') setInputBuy(value / rate);
-    else setInputBuy(value * rate);
+    if (tabOpening === 'BUY') setInputBuy(value / (inputPrice || rate));
+    else setInputBuy(value * (inputPrice || rate));
   }
 
   function handleChangeValueBuy(value: number) {
     setInputBuy(value);
-    if (tabOpening === 'BUY') setInputSpend(value * rate);
-    else setInputSpend(value / rate);
+    if (tabOpening === 'BUY') setInputSpend(value * (inputPrice || rate));
+    else setInputSpend(value / (inputPrice || rate));
   }
 
   function checkDisableActionButton() {
@@ -101,6 +119,10 @@ export default function CreateOrder() {
     };
 
     setOrders([valueSubmit, ...orders]);
+  }
+
+  function setMarketPrice() {
+    handleChangeValuePrice(rate);
   }
 
   useEffect(() => {
@@ -199,7 +221,10 @@ export default function CreateOrder() {
                     className="easy-in-out my-auto flex-shrink-0 cursor-pointer duration-500 hover:-rotate-180"
                   />
                 </div>
-                <button className="absolute top-0 right-2.5 text-[0.6rem] text-[#A5A6F6]">
+                <button
+                  onClick={setMarketPrice}
+                  className="absolute top-0 right-2.5 text-[0.6rem] text-[#A5A6F6]"
+                >
                   Set to market
                 </button>
                 <input
@@ -209,7 +234,7 @@ export default function CreateOrder() {
                   className="h-16 w-full pr-20 pt-5 text-right text-xl"
                   placeholder="0.0"
                   value={inputPrice ?? ''}
-                  onChange={e => setInputPrice(e.target.valueAsNumber)}
+                  onChange={e => handleChangeValuePrice(e.target.valueAsNumber)}
                 />
               </div>
             </div>
@@ -218,7 +243,9 @@ export default function CreateOrder() {
           <div className="card -mx-6 mt-8 -mb-6">
             <div className="flex gap-5">
               <div>
-                <span className="mb-4 block text-xs text-disabled">Spend</span>
+                <span className="mb-4 block text-xs text-disabled">
+                  {tabOpening === 'BUY' ? 'Spend' : 'Sell'}
+                </span>
                 <div
                   className="focus:blueBg flex w-28 cursor-pointer items-center rounded-lg px-2 py-1 hover:bg-blackBg"
                   onClick={() => setIsShow(true)}
@@ -314,7 +341,9 @@ export default function CreateOrder() {
 
             <div className="flex gap-5">
               <div className="duration-300 ease-in-out">
-                <span className="mb-4 block text-xs text-disabled">Buy</span>
+                <span className="mb-4 block text-xs text-disabled">
+                  {tabOpening === 'BUY' ? 'Buy' : 'Receive'}
+                </span>
                 <div
                   className="focus:blueBg flex w-28 cursor-pointer items-center rounded-lg px-2 py-1 hover:bg-blackBg"
                   onClick={() => setIsShow(true)}
