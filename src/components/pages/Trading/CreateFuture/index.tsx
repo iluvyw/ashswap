@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Icon from '@/components/Icon';
 import Collapsible from '@/components/Collapsible';
 import classnames from 'classnames';
-import { USD_FEE_ESTIMATED } from '@/api/fakeData';
+import { ORDER_DETAILS } from '@/api/fakeData';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { userWalletBalance } from '@/recoil/store';
 import {
@@ -14,15 +14,17 @@ import {
   ArrowDownIcon,
   InactiveCheckbox,
 } from '@/assets';
-import { WaitingOrder, OrderType, OrderAction, Leverage } from '@/api/models';
-import { ordersState } from '@/recoil/states/ordersState';
+import { OrderType, Leverage, WaitingFuture } from '@/api/models';
 import { modalSearchState } from '@/recoil/states/modalSearchState';
 import { featureState } from '@/recoil/states/featureState';
 import { futureOrderValue } from '@/recoil/states/futureOrderState';
 import LeverageInput from './LeverageInput';
+import { futuresState } from '@/recoil/states/futuresState';
 
 export default function CreateFuture() {
   const rate = 0.0002; // 1 BNB = 0.00035 EGLD
+  const entryPrice = 13422.01;
+  const marketPrice = 13032.01;
 
   const feature = useRecoilValue(featureState);
   const [futureOrder, setFutureOrder] = useRecoilState(futureOrderValue);
@@ -32,12 +34,10 @@ export default function CreateFuture() {
   const [leverage, setLeverage] = useState<Leverage>(2);
   const [inputTp, setInputTp] = useState<number | undefined>(undefined);
   const [inputSl, setInputSl] = useState<number | undefined>(undefined);
+  const [futureOrders, setFutureOrders] = useRecoilState(futuresState);
 
-  const [inputSpend, setInputSpend] = useState<number>(0);
-  const [inputBuy, setInputBuy] = useState<number>(0);
   const [inputPrice, setInputPrice] = useState<number | null>();
   const [coinUnitCalculated, setCoinUnitCalculated] = useState<string[]>([]);
-  const [orders, setOrders] = useRecoilState(ordersState);
   const [isSwapped, setIsSwapped] = useState<boolean>(false);
   const setIsShow = useSetRecoilState(modalSearchState);
 
@@ -50,12 +50,6 @@ export default function CreateFuture() {
     setTabOpening(tabOpening === 'SHORT' ? 'LONG' : 'SHORT');
     setIsSwapped(false);
     setFutureOrder(futureOrder);
-  }
-
-  function handleQuickSetInputSpend(percent: number) {
-    // handleChangeValueSpend(
-    //   (getBalanceByToken(futureOrder.action.token) * percent) / 100
-    // );
   }
 
   function handleSwitchCoinUnitCalculated() {
@@ -91,27 +85,40 @@ export default function CreateFuture() {
   }
 
   function handleSubmitOrder() {
-    const valueSubmit: WaitingOrder = {
+    const valueSubmit: WaitingFuture = {
       id: `ORDER${Date.now()} ${Math.floor(1000 + Math.random() * 9000)}`,
-      time: Date.now(),
-      type: OrderType.LIMIT_ORDER,
-      action: tabOpening as OrderAction,
-      pair: tabOpening === 'LONG' ? 'BNB-EGLD' : 'EGLD-BNB',
-      price: {
-        token: coinUnitCalculated[1],
-        value: inputPrice ?? 0.0,
+      type: tabOpening === 'LONG' ? OrderType.LONG : OrderType.SHORT,
+      token: futureOrder.buy,
+      netPnl: {
+        fluctuate: 1.98,
+        amount: {
+          token: futureOrder.collateral.token,
+          value: collateralSpend,
+        },
       },
-      amount: {
-        token: 'EGLD',
-        value: tabOpening === 'LONG' ? inputBuy : inputSpend,
+      liqPrice: ORDER_DETAILS.liqPrice,
+      takeProfit: {
+        token: futureOrder.collateral.token,
+        value: inputTp || 0,
       },
-      valueUSDC: {
-        token: 'BNB',
-        value: tabOpening === 'LONG' ? inputSpend : inputBuy,
+      stopLoss: {
+        token: futureOrder.collateral.token,
+        value: inputSl || 0,
       },
+      entryPrice: entryPrice,
+      marketPrice: marketPrice,
+      size: {
+        token: futureOrder.collateral.token,
+        value: ORDER_DETAILS.positionSize,
+      },
+      collateral: {
+        token: futureOrder.collateral.token,
+        value: collateralSpend,
+      },
+      leverage: leverage,
     };
 
-    setOrders([valueSubmit, ...orders]);
+    setFutureOrders([valueSubmit, ...futureOrders]);
   }
 
   function setMarketPrice() {
@@ -127,8 +134,10 @@ export default function CreateFuture() {
   }
 
   useEffect(() => {
-    setInputBuy(0);
-    setInputSpend(0);
+    setCollateralSpend(0);
+    setLeverage(2);
+    setInputTp(undefined);
+    setInputSl(undefined);
   }, [tabOpening]);
 
   return (
@@ -371,21 +380,33 @@ export default function CreateFuture() {
       <div className="card mt-4">
         <Collapsible
           title={
-            <div className="flex items-center gap-3">
-              <span className="text-lg">Fee Estimated</span>
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-lg">Order Details</span>
               <Image src={ArrowDownIcon} />
-              <span className="flex-auto text-right text-xs text-disabled">{`~ $${USD_FEE_ESTIMATED.total}`}</span>
             </div>
           }
           content={
             <div>
               <div className="flex justify-between">
-                <span>Platform Fee</span>
-                <span className="text-xs text-disabled">{`$${USD_FEE_ESTIMATED.platformFee}`}</span>
+                <span>EST. EXECUTION PRICE</span>
+                <span className="text-xs text-disabled">{`$${ORDER_DETAILS.estExecutionPrice}`}</span>
               </div>
               <div className="mt-4 flex justify-between">
-                <span>Network Gas Fee</span>
-                <span className="text-xs text-disabled">{`~ $${USD_FEE_ESTIMATED.gasFee}`}</span>
+                <span>SPREAD</span>
+                <span className="text-xs text-disabled">{`${ORDER_DETAILS.spread}%`}</span>
+              </div>
+              <div className="mt-4 flex justify-between">
+                <span>POSITION SIZE</span>
+                <span className="text-xs text-[#5D5FEF]">{`${ORDER_DETAILS.positionSize} ${futureOrder.collateral.token}`}</span>
+              </div>
+              <hr className="my-4" />
+              <div className="mt-4 flex justify-between">
+                <span>FEES</span>
+                <span className="text-xs text-[#5D5FEF]">{`${ORDER_DETAILS.fees} ${futureOrder.collateral.token}`}</span>
+              </div>
+              <div className="mt-4 flex justify-between">
+                <span>LIQ.PRICE</span>
+                <span className="text-xs text-disabled">{`$${ORDER_DETAILS.liqPrice}`}</span>
               </div>
             </div>
           }

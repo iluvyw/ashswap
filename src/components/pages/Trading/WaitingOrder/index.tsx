@@ -8,6 +8,7 @@ import { useRecoilState } from 'recoil';
 import { arrangeTheInfoState } from '@/recoil/states/arrangeTheInfo';
 import { OrderAction } from '@/api/models';
 import { ordersState } from '@/recoil/states/ordersState';
+import { futuresState } from '@/recoil/states/futuresState';
 
 export default function WaitingOrder() {
   const [modalCancelShow, setModalCancelShow] = useState<boolean>(false);
@@ -15,7 +16,10 @@ export default function WaitingOrder() {
   const [modalOrderTypeShow, setModalOrderTypeShow] = useState<boolean>(false);
   const [arrangeTheInfo] = useRecoilState(arrangeTheInfoState);
   const [orders] = useRecoilState(ordersState);
+  const [futures] = useRecoilState(futuresState);
   const [idSelectedDelete, setIdSelectedDelete] = useState<number | string>();
+
+  console.log('Futures', futures);
 
   return (
     <div>

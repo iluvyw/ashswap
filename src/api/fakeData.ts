@@ -5,6 +5,7 @@ import {
   USDFeeEstimated,
   SearchInformation,
   WalletBalance,
+  OrderDetails,
 } from './models';
 import coinASH from 'src/assets/imgs/coin-ash.png';
 import coinEGLD from 'src/assets/imgs/coin-egld.png';
@@ -430,6 +431,14 @@ export const USD_FEE_ESTIMATED: USDFeeEstimated = {
   total: 0.18,
   platformFee: 0.15,
   gasFee: 0.03,
+};
+
+export const ORDER_DETAILS: OrderDetails = {
+  estExecutionPrice: 27342.12,
+  spread: 0.04,
+  positionSize: 2350,
+  fees: 20,
+  liqPrice: 26816.92,
 };
 
 export const SEARCH_INFORMATION: SearchInformation = {

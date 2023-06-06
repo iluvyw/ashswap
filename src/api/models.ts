@@ -22,6 +22,11 @@ export type SystemCurrency = {
   image?: StaticImageData;
 };
 
+export type NetPnl = {
+  fluctuate: number;
+  amount: SystemCurrency;
+};
+
 export type WaitingOrder = {
   id: string | number;
   time: number;
@@ -31,6 +36,21 @@ export type WaitingOrder = {
   price: SystemCurrency;
   amount: SystemCurrency;
   valueUSDC: SystemCurrency;
+};
+
+export type WaitingFuture = {
+  id: string | number;
+  type: OrderType;
+  token: SystemCurrency;
+  netPnl: NetPnl;
+  liqPrice: number;
+  takeProfit: SystemCurrency;
+  stopLoss: SystemCurrency;
+  entryPrice: number;
+  marketPrice: number;
+  size: SystemCurrency;
+  collateral: SystemCurrency;
+  leverage: number;
 };
 
 export type OrderBookItem = {
@@ -61,6 +81,14 @@ export type USDFeeEstimated = {
   total: number;
   platformFee: number;
   gasFee: number;
+};
+
+export type OrderDetails = {
+  estExecutionPrice: number;
+  spread: number;
+  positionSize: number;
+  fees: number;
+  liqPrice: number;
 };
 
 export type PairToken = [
