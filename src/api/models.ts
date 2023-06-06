@@ -97,3 +97,5 @@ export type ArrayTheInfoItem = {
   icon?: StaticImageData | string;
   Cell: (item: WaitingOrder, customStyleText?: string) => React.ReactElement;
 };
+
+export type Leverage = 2 | 5 | 15 | 20 | 30 | 40 | 50;

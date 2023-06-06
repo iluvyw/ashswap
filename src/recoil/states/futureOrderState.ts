@@ -1,6 +1,4 @@
 import { atom, selector, DefaultValue } from 'recoil';
-import { WalletBalance } from '@/api/models';
-import { WALLET_BALANCE } from '@/api/fakeData';
 import coinEGLD from 'src/assets/imgs/coin-egld.png';
 import coinBNB from 'src/assets/imgs/coin-bnb.png';
 import { FutureOrder } from '../types';
@@ -58,9 +56,4 @@ export const setfutureOrder = selector({
   set: ({ set }, newFutureOrder: FutureOrder | DefaultValue) => {
     set(futureOrderState, newFutureOrder);
   },
-});
-
-export const userWalletBalance = atom<WalletBalance>({
-  key: 'userWalletBalance',
-  default: WALLET_BALANCE,
 });

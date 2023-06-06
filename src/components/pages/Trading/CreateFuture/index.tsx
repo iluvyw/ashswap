@@ -7,22 +7,19 @@ import { USD_FEE_ESTIMATED } from '@/api/fakeData';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { userWalletBalance } from '@/recoil/store';
 import {
+  ActiveCheckbox,
   Arrow1Icon,
   Arrow2Icon,
   Arrow3Icon,
   ArrowDownIcon,
-  Quick25,
-  Quick25n2,
-  Quick25n3,
-  Quick50,
-  Quick50n2,
-  SwapDeco,
+  InactiveCheckbox,
 } from '@/assets';
-import { WaitingOrder, OrderType, OrderAction } from '@/api/models';
+import { WaitingOrder, OrderType, OrderAction, Leverage } from '@/api/models';
 import { ordersState } from '@/recoil/states/ordersState';
 import { modalSearchState } from '@/recoil/states/modalSearchState';
 import { featureState } from '@/recoil/states/featureState';
 import { futureOrderValue } from '@/recoil/states/futureOrderState';
+import LeverageInput from './LeverageInput';
 
 export default function CreateFuture() {
   const rate = 0.0002; // 1 BNB = 0.00035 EGLD
@@ -32,6 +29,10 @@ export default function CreateFuture() {
   const walletBalance = useRecoilValue(userWalletBalance);
   const [tabOpening, setTabOpening] = useState<'SHORT' | 'LONG'>('LONG');
   const [collateralSpend, setCollateralSpend] = useState<number>(0);
+  const [leverage, setLeverage] = useState<Leverage>(2);
+  const [inputTp, setInputTp] = useState<number | undefined>(undefined);
+  const [inputSl, setInputSl] = useState<number | undefined>(undefined);
+
   const [inputSpend, setInputSpend] = useState<number>(0);
   const [inputBuy, setInputBuy] = useState<number>(0);
   const [inputPrice, setInputPrice] = useState<number | null>();
@@ -49,12 +50,6 @@ export default function CreateFuture() {
     setTabOpening(tabOpening === 'SHORT' ? 'LONG' : 'SHORT');
     setIsSwapped(false);
     setFutureOrder(futureOrder);
-  }
-
-  function getMainTokenHandling() {
-    const state = futureOrder.action;
-    if (state === 'LONG') return futureOrder.action;
-    return futureOrder.action;
   }
 
   function handleQuickSetInputSpend(percent: number) {
@@ -75,28 +70,23 @@ export default function CreateFuture() {
   }
 
   function handleChangeValuePrice(value: number) {
-    // setInputPrice(value);
-    // const _rate = isSwapped ? 1 / value : value;
-    // if (tabOpening === 'BUY') {
-    //   setInputSpend(inputBuy * _rate);
-    // } else {
-    //   setInputBuy(inputSpend * _rate);
-    // }
+    setInputPrice(value);
   }
 
   function handleChangeCollateralSpend(value: number) {
     setCollateralSpend(value);
   }
 
-  function handleChangeValueBuy(value: number) {
-    // setInputBuy(value);
-    // const _rate = isSwapped ? 1 / (inputPrice || rate) : inputPrice || rate;
-    // if (tabOpening === 'BUY') setInputSpend(value * (_rate || rate));
-    // else setInputSpend(value / (_rate || rate));
+  function handleChangeValueTakeProfit(value: number) {
+    setInputTp(value);
+  }
+
+  function handleChangeValueStopLoss(value: number) {
+    setInputSl(value);
   }
 
   function checkDisableActionButton() {
-    if (!collateralSpend || collateralSpend == 0) return true;
+    if (!collateralSpend || collateralSpend == 0 || !inputPrice) return true;
     return false;
   }
 
@@ -126,6 +116,14 @@ export default function CreateFuture() {
 
   function setMarketPrice() {
     handleChangeValuePrice(rate);
+  }
+
+  function toggleTpCheckbox() {
+    inputTp === undefined ? setInputTp(0) : setInputTp(undefined);
+  }
+
+  function toggleSlCheckbox() {
+    inputSl === undefined ? setInputSl(0) : setInputSl(undefined);
   }
 
   useEffect(() => {
@@ -276,70 +274,7 @@ export default function CreateFuture() {
                 {getBalanceByToken(futureOrder.collateral.token)}
               </span>
             </span>
-
-            {/* <div className="relative mb-6 mt-8 flex justify-center">
-              <Image
-                src={SwapDeco}
-                className="z-10 cursor-pointer"
-                onClick={handleTabOpening}
-              />
-              <div className="absolute -top-[36%] left-0 z-10 flex w-full items-end gap-1">
-                <div
-                  className="group relative cursor-pointer"
-                  onClick={() => handleQuickSetInputSpend(25)}
-                >
-                  <Icon
-                    defaultSrc={Quick25}
-                    hoverSrc={Quick25n2}
-                    focusSrc={Quick25n3}
-                  />
-                  <span className="absolute bottom-0 left-6 z-10 text-[#7879F1] opacity-0 duration-500 ease-in-out group-hover:bottom-3 group-hover:opacity-100 group-hover:ease-in-out">
-                    25%
-                  </span>
-                </div>
-                <div
-                  className="group relative cursor-pointer"
-                  onClick={() => handleQuickSetInputSpend(50)}
-                >
-                  <Icon
-                    defaultSrc={Quick50}
-                    hoverSrc={Quick50n2}
-                    focusSrc={Quick50n2}
-                  />
-                  <span className="absolute bottom-0 left-6 z-10 text-[#7879F1] opacity-0 duration-500 group-hover:bottom-3 group-hover:opacity-100 group-hover:ease-in-out">
-                    50%
-                  </span>
-                </div>
-                <div
-                  className="group relative cursor-pointer"
-                  onClick={() => handleQuickSetInputSpend(75)}
-                >
-                  <Icon
-                    defaultSrc={Quick50}
-                    hoverSrc={Quick50n2}
-                    focusSrc={Quick50n2}
-                    className="-scale-x-100 transform"
-                  />
-                  <span className="absolute bottom-0 left-6 z-10 text-[#7879F1] opacity-0 duration-500 group-hover:bottom-3 group-hover:opacity-100 group-hover:ease-in-out">
-                    75%
-                  </span>
-                </div>
-                <div
-                  className="group relative"
-                  onClick={() => handleQuickSetInputSpend(100)}
-                >
-                  <Icon
-                    defaultSrc={Quick25}
-                    hoverSrc={Quick25n2}
-                    focusSrc={Quick25n3}
-                  />
-                  <span className="absolute bottom-0 left-6 z-10 text-[#7879F1] opacity-0 duration-500 group-hover:bottom-3 group-hover:opacity-100 group-hover:ease-in-out">
-                    100%
-                  </span>
-                </div>
-              </div>
-            </div> */}
-
+            <LeverageInput leverage={leverage} setLeverage={setLeverage} />
             <button
               className={classnames(
                 'btn-big mt-4 mb-3 w-full font-bold uppercase',
@@ -352,6 +287,83 @@ export default function CreateFuture() {
             >
               {futureOrder.action} {futureOrder.buy.token}
             </button>
+            <div className="flex w-full gap-5">
+              <div
+                className={classnames(
+                  'h-fit w-1/2 rounded-lg border p-2 duration-300 ease-linear hover:bg-blueBg',
+                  inputTp !== undefined
+                    ? 'border-[#5D5FEF] bg-blueBg'
+                    : 'border-transparent'
+                )}
+              >
+                <div
+                  onClick={toggleTpCheckbox}
+                  className="flex cursor-pointer items-center"
+                >
+                  <Image
+                    src={
+                      inputTp === undefined ? InactiveCheckbox : ActiveCheckbox
+                    }
+                    width={24}
+                    height={24}
+                    alt="checkbox"
+                  />
+                  <h3 className="ml-2 text-sm">Take profit</h3>
+                </div>
+                {inputTp !== undefined && (
+                  <div className="mt-10 flex items-center">
+                    <input
+                      type="number"
+                      value={inputTp}
+                      onChange={e =>
+                        handleChangeValueTakeProfit(e.target.valueAsNumber)
+                      }
+                      placeholder="0.00"
+                      className="transparent-input mr-1 p-0 text-right text-lg"
+                    />
+                    <h3>{futureOrder.collateral.token}</h3>
+                  </div>
+                )}
+              </div>
+
+              <div
+                className={classnames(
+                  'h-fit w-1/2 rounded-lg border p-2 duration-300 ease-linear hover:bg-blueBg',
+                  inputSl !== undefined
+                    ? 'border-[#5D5FEF] bg-blueBg'
+                    : 'border-transparent'
+                )}
+              >
+                <div
+                  onClick={toggleSlCheckbox}
+                  className="flex cursor-pointer items-center"
+                >
+                  <Image
+                    src={
+                      inputSl === undefined ? InactiveCheckbox : ActiveCheckbox
+                    }
+                    width={24}
+                    height={24}
+                    alt="checkbox"
+                  />
+                  <h3 className="ml-2 text-sm">Stop loss</h3>
+                </div>
+                {inputSl !== undefined && (
+                  <div className="mt-10 flex items-center">
+                    <input
+                      type="number"
+                      value={inputSl}
+                      onChange={e =>
+                        handleChangeValueStopLoss(e.target.valueAsNumber)
+                      }
+                      placeholder="0.00"
+                      className="transparent-input mr-1 p-0 text-right text-lg"
+                    />
+                    <h3>{futureOrder.collateral.token}</h3>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

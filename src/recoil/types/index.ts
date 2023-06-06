@@ -1,4 +1,9 @@
-import { ArrayTheInfoItem, PairSearched, SystemCurrency } from '@/api/models';
+import {
+  ArrayTheInfoItem,
+  Leverage,
+  PairSearched,
+  SystemCurrency,
+} from '@/api/models';
 
 export interface LimitOrder {
   action: 'SELL' | 'BUY';
@@ -10,7 +15,7 @@ export interface FutureOrder {
   action: 'LONG' | 'SHORT';
   buy: SystemCurrency;
   collateral: SystemCurrency;
-  leverage: 2 | 5 | 15 | 20 | 30 | 40 | 50;
+  leverage: Leverage;
   tp?: number;
   sl?: number;
 }

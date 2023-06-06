@@ -19,7 +19,7 @@
   }
 
   thead th div {
-    @apply rounded-md p-2 h-8 ml-1 mb-2 flex justify-around items-center bg-blackBg;
+    @apply ml-1 mb-2 flex h-8 items-center justify-around rounded-md bg-blackBg p-2;
   }
 
   tr {
@@ -31,23 +31,23 @@
   }
 
   input {
-    @apply bg-[#A5A6F626] hover:bg-[#A5A6F60D] hover:border hover:border-[#A5A6F6] focus-visible:bg-[#A5A6F60D] focus-visible:border focus-visible:border-[#5D5FEF] focus:outline-none;
-    @apply rounded-lg block w-full box-border placeholder:text-disabled;
+    @apply bg-[#A5A6F626] hover:border hover:border-[#A5A6F6] hover:bg-[#A5A6F60D] focus:outline-none focus-visible:border focus-visible:border-[#5D5FEF] focus-visible:bg-[#A5A6F60D];
+    @apply box-border block w-full rounded-lg placeholder:text-disabled;
   }
 
   button {
-    @apply ease-in-out duration-300;
+    @apply duration-300 ease-in-out;
   }
 }
 
 @layer components {
   .card {
     background-color: theme(colors.white);
-    @apply p-6 rounded-2xl;
+    @apply rounded-2xl p-6;
   }
 
   .aside-menu-item {
-    @apply flex flex-col items-center rounded-lg gap-1;
+    @apply flex flex-col items-center gap-1 rounded-lg;
     padding: 6px 12px;
   }
 
@@ -66,6 +66,12 @@
     font-size: 8px;
     line-height: 10px;
     color: theme(colors.disabled);
+  }
+
+  .transparent-input {
+    border: 0px !important;
+    background-color: transparent !important;
+    outline: none !important;
   }
 }
 

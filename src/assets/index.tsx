@@ -45,6 +45,11 @@ import SettingIcon from './imgs/ic-setting-2.svg';
 import ArrowRightWhite from './imgs/arrow-right-white.svg';
 import TextAlignRightIcon from './imgs/ic-text-align-right.svg';
 import USAFlag from './imgs/us.svg';
+import BikeIcon from './imgs/ic-bike.svg';
+import DiamondIcon from './imgs/ic-diamond.svg';
+import Diamond1Icon from './imgs/ic-diamond-1.svg';
+import ActiveCheckbox from './imgs/active-checkbox.svg';
+import InactiveCheckbox from './imgs/inactive-checkbox.svg';
 
 export {
   ArrowCircleLeftIcon,
@@ -94,4 +99,9 @@ export {
   ArrowRightWhite,
   TextAlignRightIcon,
   USAFlag,
+  BikeIcon,
+  DiamondIcon,
+  Diamond1Icon,
+  ActiveCheckbox,
+  InactiveCheckbox,
 };
