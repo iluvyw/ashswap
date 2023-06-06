@@ -21,12 +21,10 @@ import {
 import { WaitingOrder, OrderType, OrderAction } from '@/api/models';
 import { ordersState } from '@/recoil/states/ordersState';
 import { modalSearchState } from '@/recoil/states/modalSearchState';
-import { featureState } from '@/recoil/states/featureState';
 
 export default function CreateOrder() {
   const rate = 0.0002; // 1 BNB = 0.00035 EGLD
 
-  const feature = useRecoilValue(featureState);
   const [limitOrder, setLimitOrder] = useRecoilState(limitOrderValue);
   const walletBalance = useRecoilValue(userWalletBalance);
   const [tabOpening, setTabOpening] = useState<'SELL' | 'BUY'>('BUY');
@@ -143,7 +141,7 @@ export default function CreateOrder() {
   }, [tabOpening]);
 
   return (
-    <div className={`${feature !== 'TRADE' && 'hidden'}`}>
+    <div>
       <div className="card w-full bg-[#FDFDFF]/60">
         <ul className="flex flex-wrap gap-6 text-center text-sm font-bold uppercase">
           <li>

@@ -126,4 +126,13 @@ export type ArrayTheInfoItem = {
   Cell: (item: WaitingOrder, customStyleText?: string) => React.ReactElement;
 };
 
+export type ArrangeFutureItem = {
+  id: string | number;
+  show: boolean;
+  text: string;
+  isHover: boolean;
+  icon?: StaticImageData | string;
+  Cell: (item: WaitingFuture, customStyleText?: string) => React.ReactElement;
+};
+
 export type Leverage = 2 | 5 | 15 | 20 | 30 | 40 | 50;

@@ -16,7 +16,6 @@ import {
 } from '@/assets';
 import { OrderType, Leverage, WaitingFuture } from '@/api/models';
 import { modalSearchState } from '@/recoil/states/modalSearchState';
-import { featureState } from '@/recoil/states/featureState';
 import { futureOrderValue } from '@/recoil/states/futureOrderState';
 import LeverageInput from './LeverageInput';
 import { futuresState } from '@/recoil/states/futuresState';
@@ -26,7 +25,6 @@ export default function CreateFuture() {
   const entryPrice = 13422.01;
   const marketPrice = 13032.01;
 
-  const feature = useRecoilValue(featureState);
   const [futureOrder, setFutureOrder] = useRecoilState(futureOrderValue);
   const walletBalance = useRecoilValue(userWalletBalance);
   const [tabOpening, setTabOpening] = useState<'SHORT' | 'LONG'>('LONG');
@@ -141,7 +139,7 @@ export default function CreateFuture() {
   }, [tabOpening]);
 
   return (
-    <div className={`${feature !== 'FUTURE' && 'hidden'}`}>
+    <div>
       <div className="card w-full bg-[#FDFDFF]/60">
         <ul className="flex flex-wrap gap-6 text-center text-sm font-bold uppercase">
           <li>

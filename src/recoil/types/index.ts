@@ -1,4 +1,5 @@
 import {
+  ArrangeFutureItem,
   ArrayTheInfoItem,
   Leverage,
   PairSearched,
@@ -27,4 +28,8 @@ export interface FavoredState {
 
 export interface ArrangeTheInfoState {
   items: Array<ArrayTheInfoItem>;
+}
+
+export interface ArrangeFutureState {
+  items: Array<ArrangeFutureItem>;
 }

@@ -5,17 +5,19 @@ import ModalMore from './ModalMore';
 import ModalOrderType from './ModalOrderType';
 import { CloseIcon, MoreIcon } from '@/assets';
 import { useRecoilState } from 'recoil';
-import { arrangeTheInfoState } from '@/recoil/states/arrangeTheInfo';
-import { OrderAction } from '@/api/models';
 import { ordersState } from '@/recoil/states/ordersState';
+import { futuresState } from '@/recoil/states/futuresState';
+import { arrangeFutureInfoState } from '@/recoil/states/arrangeFutureInfo';
 
-export default function WaitingOrder() {
+export default function WaitingFuture() {
   const [modalCancelShow, setModalCancelShow] = useState<boolean>(false);
   const [modalMoreShow, setModalMoreShow] = useState<boolean>(false);
   const [modalOrderTypeShow, setModalOrderTypeShow] = useState<boolean>(false);
-  const [arrangeTheInfo] = useRecoilState(arrangeTheInfoState);
-  const [orders] = useRecoilState(ordersState);
+  const [arrangeFutureInfo] = useRecoilState(arrangeFutureInfoState);
+  const [futures] = useRecoilState(futuresState);
   const [idSelectedDelete, setIdSelectedDelete] = useState<number | string>();
+
+  console.log('Futures', futures);
 
   return (
     <div>
@@ -23,7 +25,7 @@ export default function WaitingOrder() {
         <table className="w-full">
           <thead className="">
             <tr>
-              {arrangeTheInfo.items.map((value, index) => {
+              {arrangeFutureInfo.items.map((value, index) => {
                 if (!value.show) return null;
                 return (
                   <th scope="col" key={index}>
@@ -57,18 +59,13 @@ export default function WaitingOrder() {
             </tr>
           </thead>
           <tbody>
-            {orders.length > 0
-              ? orders.map((order, i) => {
+            {futures.length > 0
+              ? futures.map((order, i) => {
                   return (
                     <tr key={i}>
-                      {arrangeTheInfo.items.map(value => {
+                      {arrangeFutureInfo.items.map(value => {
                         if (!value.show) return null;
-                        return value.Cell(
-                          order,
-                          order.action === OrderAction.BUY
-                            ? 'text-success'
-                            : 'text-danger'
-                        );
+                        return value.Cell(order);
                       })}
                       <td className="px-1 py-2 align-bottom">
                         <button
@@ -88,7 +85,7 @@ export default function WaitingOrder() {
               : null}
           </tbody>
         </table>
-        {orders.length === 0 ? (
+        {futures.length === 0 ? (
           <div className="mt-4 flex w-full justify-center">
             You have not placed any orders yet.
           </div>
