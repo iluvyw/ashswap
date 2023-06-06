@@ -81,14 +81,16 @@ export default function CreateOrder() {
 
   function handleChangeValueSpend(value: number) {
     setInputSpend(value);
-    if (tabOpening === 'BUY') setInputBuy(value / (inputPrice || rate));
-    else setInputBuy(value * (inputPrice || rate));
+    const _rate = isSwapped ? 1 / (inputPrice || rate) : inputPrice || rate;
+    if (tabOpening === 'BUY') setInputBuy(value / (_rate || rate));
+    else setInputBuy(value * (_rate || rate));
   }
 
   function handleChangeValueBuy(value: number) {
     setInputBuy(value);
-    if (tabOpening === 'BUY') setInputSpend(value * (inputPrice || rate));
-    else setInputSpend(value / (inputPrice || rate));
+    const _rate = isSwapped ? 1 / (inputPrice || rate) : inputPrice || rate;
+    if (tabOpening === 'BUY') setInputSpend(value * (_rate || rate));
+    else setInputSpend(value / (_rate || rate));
   }
 
   function checkDisableActionButton() {
