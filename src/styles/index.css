@@ -73,6 +73,10 @@
     background-color: transparent !important;
     outline: none !important;
   }
+
+  .transparent-important {
+    background: transparent !important;
+  }
 }
 
 @layer utilities {

@@ -53,7 +53,7 @@ export default function Layout({ children }: LayoutProps) {
         </ul> */}
       </div>
       {/* </aside> */}
-      <div className="w-screen flex-1 p-6 pt-0">{children}</div>
+      <div className="flex-1 p-6 pt-0 sm:w-screen">{children}</div>
     </div>
   );
 }
