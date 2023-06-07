@@ -2,7 +2,6 @@ import Modal from 'src/components/Modal';
 import Image from 'next/image';
 import { Eye2Icon, EyeSlashIcon, TextAlignRightIcon } from '@/assets';
 import { useRecoilState } from 'recoil';
-import { arrangeTheInfoState } from '@/recoil/states/arrangeTheInfo';
 import { arrangeFutureInfoState } from '@/recoil/states/arrangeFutureInfo';
 
 type ModalMoreProps = {

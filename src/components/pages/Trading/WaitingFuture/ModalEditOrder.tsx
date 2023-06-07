@@ -8,7 +8,6 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import Modal from 'src/components/Modal';
-import styles from '../Header/styles.module.css';
 import { ORDER_DETAILS } from '@/api/fakeData';
 
 type ModalCancelOrderProps = {

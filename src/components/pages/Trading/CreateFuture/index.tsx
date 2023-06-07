@@ -39,8 +39,6 @@ export default function CreateFuture() {
   const [futureOrders, setFutureOrders] = useRecoilState(futuresState);
 
   const [inputPrice, setInputPrice] = useState<number | null>();
-  const [coinUnitCalculated, setCoinUnitCalculated] = useState<string[]>([]);
-  const [isSwapped, setIsSwapped] = useState<boolean>(false);
   const setIsShow = useSetRecoilState(modalSearchState);
 
   function getBalanceByToken(token: string) {
@@ -50,22 +48,10 @@ export default function CreateFuture() {
 
   function handleTabOpening() {
     setTabOpening(tabOpening === 'SHORT' ? 'LONG' : 'SHORT');
-    setIsSwapped(false);
     setInputTp(undefined);
     setInputSl(undefined);
     setActiveInput(null);
     setFutureOrder(futureOrder);
-  }
-
-  function handleSwitchCoinUnitCalculated() {
-    // setCoinUnitCalculated(prev => [prev[1], prev[0]]);
-    // const _rate = !isSwapped ? 1 / (inputPrice || rate) : inputPrice || rate;
-    // if (tabOpening === 'BUY') {
-    //   setInputSpend(inputBuy * _rate);
-    // } else {
-    //   setInputBuy(inputSpend * _rate);
-    // }
-    // setIsSwapped(prev => !prev);
   }
 
   function handleChangeValuePrice(value: number) {
@@ -240,10 +226,7 @@ export default function CreateFuture() {
               </div>
               <div className="h-16 w-24 flex-auto items-center text-right text-2xl">
                 <div className="relative h-16 w-full">
-                  <div
-                    className="absolute right-2.5 bottom-2.5 flex h-5 w-fit cursor-pointer items-center rounded-lg bg-white px-2"
-                    onClick={handleSwitchCoinUnitCalculated}
-                  >
+                  <div className="absolute right-2.5 bottom-2.5 flex h-5 w-fit cursor-pointer items-center rounded-lg bg-white px-2">
                     <span className="mr-1 text-xs text-black">
                       {futureOrder.collateral.token}
                     </span>
