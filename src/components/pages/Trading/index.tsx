@@ -61,6 +61,7 @@ export default function Trading() {
             defaultSrc={ArrowCircleLeftIcon3}
             hoverSrc={ArrowCircleLeftIcon2}
             focusSrc={ArrowCircleLeftIcon}
+            className={!isCollapsedOrderBook ? 'rotate-180' : ''}
           />
         </div>
       </div>
