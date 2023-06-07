@@ -51,6 +51,7 @@ import Diamond1Icon from './imgs/ic-diamond-1.svg';
 import ActiveCheckbox from './imgs/active-checkbox.svg';
 import InactiveCheckbox from './imgs/inactive-checkbox.svg';
 import ClearIcon from './imgs/ic-clear.svg';
+import EditIcon from './imgs/ic-edit.svg';
 
 export {
   ArrowCircleLeftIcon,
@@ -106,4 +107,5 @@ export {
   ActiveCheckbox,
   InactiveCheckbox,
   ClearIcon,
+  EditIcon,
 };

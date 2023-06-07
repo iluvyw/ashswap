@@ -133,7 +133,7 @@ export const arrangeFutureInfoState = atom<ArrangeFutureState>({
         isHover: false,
         Cell: item => (
           <td className="text-right">
-            {item.size.value} {item.size.token}
+            {item.collateral.value} {item.collateral.token}
           </td>
         ),
       },

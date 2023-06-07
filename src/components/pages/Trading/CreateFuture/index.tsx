@@ -119,6 +119,7 @@ export default function CreateFuture() {
       collateral: {
         token: futureOrder.collateral.token,
         value: collateralSpend,
+        image: futureOrder.collateral.image,
       },
       leverage: leverage,
     };
@@ -313,7 +314,7 @@ export default function CreateFuture() {
             </div>
             <span className="mt-2 block text-right text-disabled">
               Balance:{' '}
-              <span className="text-blackDefault">
+              <span className="text-[#5D5FEF]">
                 {getBalanceByToken(futureOrder.collateral.token)}
               </span>
             </span>
