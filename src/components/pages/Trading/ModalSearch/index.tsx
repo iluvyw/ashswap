@@ -82,58 +82,68 @@ const ModalSearch: React.FC = () => {
           </div>
         </div>
         <div className="mt-9 flex">
-          <div className="w-full border-r border-r-blackBg pl-4">
-            <span className="mb-7 block text-sm font-bold text-disabled">
-              Favorited Pairs
-            </span>
+          <div className="w-full p-4">
+            <div className="mb-7 flex w-full items-center gap-4 text-xs">
+              <span className="w-1/2 font-light text-disabled">
+                Favorited Pairs
+              </span>
+              <span className="w-1/4 text-right font-light text-disabled">
+                24h Change
+              </span>
+              <span className="w-1/4 text-right font-light text-disabled">
+                Price
+              </span>
+            </div>
             {favoredStateValue.listFavored.map((item, i) => (
               <div
-                className="mb-9 flex items-center justify-between pr-9"
+                className="mb-9 flex w-full items-center justify-between gap-4"
                 key={`${item.pairToken}-${i}`}
               >
-                <Image src={item.pairToken[0].image} width={16} height={16} />
-                <Image src={item.pairToken[1].image} width={16} height={16} />
-                <span className="ml-2 text-sm">{item.pairToken[0].token}</span>
-                <hr className="mx-1 w-2" />
-                <span className="mr-2 text-sm">{item.pairToken[1].token}</span>
+                <div className="flex w-1/2 items-center">
+                  <button
+                    className="rounded-lg p-[6px] hover:bg-blueBg"
+                    onClick={() => handleTickFavored(item.id, true)}
+                    data-cy={`remove-btn-${i}`}
+                  >
+                    <Image src={StarIcon} />
+                  </button>
+                  <Image src={item.pairToken[0].image} width={16} height={16} />
+                  <Image src={item.pairToken[1].image} width={16} height={16} />
+                  <span className="ml-2 text-sm">
+                    {item.pairToken[0].token}-{item.pairToken[1].token}
+                  </span>
+                </div>
                 {item.percentChanged >= 0 && (
                   <>
-                    <div className="flex w-24 items-center gap-1">
+                    <div className="flex w-1/4 items-center justify-end gap-1">
                       <span className="text-right text-xs text-success">
                         +{item.percentChanged}%
                       </span>
                       <Image src={ArrowDownGreen} />
                     </div>
-                    <span className="text-bold mr-10 w-16 text-sm text-success">
-                      {item.priceChanged}
+                    <span className="text-bold w-1/4 rounded bg-[#F2FCFA] p-1 text-right text-sm text-success">
+                      <span>{item.priceChanged}</span>
                     </span>
                   </>
                 )}
                 {item.percentChanged < 0 && (
                   <>
-                    <div className="flex w-24 items-center gap-1">
+                    <div className="flex w-1/4 items-center justify-end gap-1">
                       <span className="text-right text-xs text-danger">
                         +{item.percentChanged}%
                       </span>
                       <Image src={ArrowDownRed} />
                     </div>
-                    <span className="text-bold mr-10 w-16 text-sm text-danger">
+                    <span className="text-bold w-1/4 rounded bg-[#FFF2F7] p-1 text-right text-sm text-danger">
                       {item.priceChanged}
                     </span>
                   </>
                 )}
-                <button
-                  className="rounded-lg p-[6px] hover:bg-blueBg"
-                  onClick={() => handleTickFavored(item.id, true)}
-                  data-cy={`remove-btn-${i}`}
-                >
-                  <Image src={StarIcon} />
-                </button>
               </div>
             ))}
           </div>
         </div>
-        <hr className="mb-9" />
+        <hr className="mb-2" />
         <div className="mt-5 flex flex-wrap gap-2">
           {SEARCH_INFORMATION.recentSearch.map((item, i) => (
             <button
