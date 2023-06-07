@@ -73,7 +73,7 @@ export const arrangeFutureInfoState = atom<ArrangeFutureState>({
       },
       {
         id: 4,
-        show: true,
+        show: false,
         text: 'Liq. Price',
         isHover: false,
         Cell: item => <td className="text-right">${item.liqPrice}</td>,
@@ -102,7 +102,7 @@ export const arrangeFutureInfoState = atom<ArrangeFutureState>({
       },
       {
         id: 7,
-        show: true,
+        show: false,
         text: 'Entry Price',
         isHover: false,
         Cell: item => <td className="text-right">${item.entryPrice}</td>,

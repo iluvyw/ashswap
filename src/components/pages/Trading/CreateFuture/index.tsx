@@ -27,6 +27,7 @@ export default function CreateFuture() {
   const marketPrice = 13032.01;
   const fluctuatingRates = [10, 25, 50, 75, 100];
 
+  const [orderType, setOrderType] = useState<'LIMIT' | 'MARKET'>('LIMIT');
   const [futureOrder, setFutureOrder] = useRecoilState(futureOrderValue);
   const walletBalance = useRecoilValue(userWalletBalance);
   const [tabOpening, setTabOpening] = useState<'SHORT' | 'LONG'>('LONG');
@@ -158,27 +159,42 @@ export default function CreateFuture() {
     <div>
       <div className="card w-full bg-[#FDFDFF]/60">
         <ul className="flex flex-wrap gap-6 text-center text-sm font-bold uppercase">
-          <li>
-            <a href="#" className="active inline-block" aria-current="page">
-              Future Order
-            </a>
-          </li>
-          <li>
+          <li onClick={() => setOrderType('LIMIT')}>
             <a
               href="#"
-              className="inline-block cursor-not-allowed text-gray-400"
+              className={classnames(
+                'inline-block',
+                orderType === 'LIMIT' ? 'active' : 'text-gray-400'
+              )}
+              aria-current="page"
             >
-              Long
+              Limit
             </a>
           </li>
-          <li>
+          <li
+            onClick={() => {
+              setOrderType('MARKET');
+              setInputPrice(rate);
+            }}
+          >
+            <a
+              href="#"
+              className={classnames(
+                'inline-block',
+                orderType === 'MARKET' ? 'active' : 'text-gray-400'
+              )}
+            >
+              Market
+            </a>
+          </li>
+          {/* <li>
             <a
               href="#"
               className="inline-block cursor-not-allowed text-gray-400"
             >
               Short
             </a>
-          </li>
+          </li> */}
         </ul>
         <div>
           <ul className="mt-7 flex w-full gap-1 rounded-md bg-blackBg p-1 text-sm uppercase">
@@ -208,54 +224,58 @@ export default function CreateFuture() {
             </li>
           </ul>
 
-          <div className="mt-8 flex w-full items-center gap-9">
-            <div>
-              <span className="block text-xs text-disabled">
-                <span className="capitalize">
-                  {futureOrder.action.toLowerCase()}
-                </span>
-                &nbsp;{futureOrder.buy.token} when
-              </span>
-              <span className="flex-auto text-lg">
-                1 {futureOrder.buy.token} =
-              </span>
-            </div>
-            <div className="h-16 w-24 flex-auto items-center text-right text-2xl">
-              <div className="relative h-16 w-full">
-                <div
-                  className="absolute right-2.5 bottom-2.5 flex h-5 w-fit cursor-pointer items-center rounded-lg bg-white px-2"
-                  onClick={handleSwitchCoinUnitCalculated}
-                >
-                  <span className="mr-1 text-xs text-black">
-                    {futureOrder.collateral.token}
+          {orderType === 'LIMIT' && (
+            <div className="mt-8 flex w-full items-center gap-9">
+              <div>
+                <span className="block text-xs text-disabled">
+                  <span className="capitalize">
+                    {futureOrder.action.toLowerCase()}
                   </span>
-                  <Icon
-                    defaultSrc={Arrow1Icon}
-                    hoverSrc={Arrow2Icon}
-                    focusSrc={Arrow3Icon}
-                    width={15}
-                    height={15}
-                    className="easy-in-out my-auto flex-shrink-0 cursor-pointer duration-500 hover:-rotate-180"
+                  &nbsp;{futureOrder.buy.token} when
+                </span>
+                <span className="flex-auto text-lg">
+                  1 {futureOrder.buy.token} =
+                </span>
+              </div>
+              <div className="h-16 w-24 flex-auto items-center text-right text-2xl">
+                <div className="relative h-16 w-full">
+                  <div
+                    className="absolute right-2.5 bottom-2.5 flex h-5 w-fit cursor-pointer items-center rounded-lg bg-white px-2"
+                    onClick={handleSwitchCoinUnitCalculated}
+                  >
+                    <span className="mr-1 text-xs text-black">
+                      {futureOrder.collateral.token}
+                    </span>
+                    <Icon
+                      defaultSrc={Arrow1Icon}
+                      hoverSrc={Arrow2Icon}
+                      focusSrc={Arrow3Icon}
+                      width={15}
+                      height={15}
+                      className="easy-in-out my-auto flex-shrink-0 cursor-pointer duration-500 hover:-rotate-180"
+                    />
+                  </div>
+                  <button
+                    onClick={setMarketPrice}
+                    className="absolute top-0 right-2.5 text-[0.6rem] text-[#A5A6F6]"
+                  >
+                    Set to market
+                  </button>
+                  <input
+                    type="number"
+                    name="price"
+                    id="input-group-1"
+                    className="h-16 w-full pr-20 pt-5 text-right text-xl"
+                    placeholder="0.0"
+                    value={inputPrice ?? ''}
+                    onChange={e =>
+                      handleChangeValuePrice(e.target.valueAsNumber)
+                    }
                   />
                 </div>
-                <button
-                  onClick={setMarketPrice}
-                  className="absolute top-0 right-2.5 text-[0.6rem] text-[#A5A6F6]"
-                >
-                  Set to market
-                </button>
-                <input
-                  type="number"
-                  name="price"
-                  id="input-group-1"
-                  className="h-16 w-full pr-20 pt-5 text-right text-xl"
-                  placeholder="0.0"
-                  value={inputPrice ?? ''}
-                  onChange={e => handleChangeValuePrice(e.target.valueAsNumber)}
-                />
               </div>
             </div>
-          </div>
+          )}
 
           <div className="card -mx-6 mt-8 -mb-6">
             <div className="flex gap-5">
