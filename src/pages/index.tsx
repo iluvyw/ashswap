@@ -10,7 +10,7 @@ export default function IndexPage() {
           <div>
             <Header />
           </div>
-          <div className="min-h-screen">
+          <div className="min-h-screen sm:mt-6">
             <Trading />
           </div>
         </div>

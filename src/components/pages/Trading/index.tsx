@@ -23,12 +23,12 @@ export default function Trading() {
   const feature = useRecoilValue(featureState);
 
   return (
-    <div className="flex w-full">
-      <div className="card relative z-10 flex-1">
-        <div className="w-full">
+    <div className="flex w-full sm:flex-col sm:gap-5">
+      <div className="card relative z-10 flex-1 sm:overflow-x-scroll">
+        <div className="w-full sm:w-fit">
           <TradingView />
         </div>
-        <div>
+        <div className="sm:hidden">
           <div className="my-5 flex">
             <h3
               className={classnames(
@@ -54,7 +54,7 @@ export default function Trading() {
           {feature === 'FUTURE' && <WaitingFuture />}
         </div>
         <div
-          className="absolute -right-3 top-6 h-6 w-6 cursor-pointer"
+          className="absolute -right-3 top-6 h-6 w-6 cursor-pointer sm:hidden"
           onClick={() => setIsCollapsedOrderBook(!isCollapsedOrderBook)}
         >
           <Icon
@@ -66,7 +66,7 @@ export default function Trading() {
       </div>
       <div
         className={classnames(
-          'card relative -ml-10 mr-6 flex flex-col bg-[#FDFDFF]/60 pl-16 duration-700 ease-in-out',
+          'card relative -ml-10 mr-6 flex flex-col bg-[#FDFDFF]/60 pl-16 duration-700 ease-in-out sm:hidden',
           isCollapsedOrderBook ? 'w-12' : 'w-60'
         )}
       >
@@ -87,7 +87,7 @@ export default function Trading() {
           Orderbook
         </span>
       </div>
-      <div className="w-[360px]">
+      <div className="w-[360px] sm:w-full">
         {feature === 'TRADE' && <CreateOrder />}
         {feature === 'FUTURE' && <CreateFuture />}
       </div>

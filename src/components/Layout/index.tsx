@@ -26,7 +26,7 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className="flex bg-[#F1F1FF]">
-      <div className="align-center flex w-16 flex-none flex-col rounded-r-lg bg-white p-2 pt-5">
+      <div className="align-center flex w-16 flex-none flex-col rounded-r-lg bg-white p-2 pt-5 sm:hidden">
         <Image src={logo} placeholder="blur" />
         {/* </menu> */}
         <ul className="mt-8 space-y-2">
@@ -53,7 +53,7 @@ export default function Layout({ children }: LayoutProps) {
         </ul> */}
       </div>
       {/* </aside> */}
-      <div className="flex-1 p-6 pt-0">{children}</div>
+      <div className="w-screen flex-1 p-6 pt-0">{children}</div>
     </div>
   );
 }
