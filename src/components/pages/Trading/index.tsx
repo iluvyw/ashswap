@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import classnames from 'classnames';
 import Icon from '@/components/Icon';
@@ -14,15 +14,25 @@ import CreateOrder from './CreateOrder';
 import ModalSearch from './ModalSearch';
 import CreateFuture from './CreateFuture';
 import WaitingFuture from './WaitingFuture';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { waitingTabState } from '@/recoil/states/waitingTabState';
 import { featureState } from '@/recoil/states/featureState';
+import { futuresState } from '@/recoil/states/futuresState';
+import { WAITING_FUTURE_LIST, WAITING_ORDER_LIST } from '@/api/fakeData';
+import { ordersState } from '@/recoil/states/ordersState';
 
 export default function Trading() {
   const [isCollapsedOrderBook, setIsCollapsedOrderBook] =
     useState<boolean>(false);
   const feature = useRecoilValue(featureState);
   const [waitingTab, setWaitingTab] = useRecoilState(waitingTabState);
+  const setFutures = useSetRecoilState(futuresState);
+  const setOrders = useSetRecoilState(ordersState);
+
+  useEffect(() => {
+    setOrders(WAITING_ORDER_LIST);
+    setFutures(WAITING_FUTURE_LIST);
+  }, []);
 
   return (
     <div className="flex w-full sm:flex-col sm:gap-5">

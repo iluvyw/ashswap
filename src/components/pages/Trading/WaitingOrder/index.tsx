@@ -1,26 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import ModalCancelOrder from './ModalCancelOrder';
 import ModalMore from './ModalMore';
 import ModalOrderType from './ModalOrderType';
 import { CloseIcon, MoreIcon } from '@/assets';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { arrangeTheInfoState } from '@/recoil/states/arrangeTheInfo';
 import { OrderAction } from '@/api/models';
 import { ordersState } from '@/recoil/states/ordersState';
-import { WAITING_ORDER_LIST } from '@/api/fakeData';
 
 export default function WaitingOrder() {
   const [modalCancelShow, setModalCancelShow] = useState<boolean>(false);
   const [modalMoreShow, setModalMoreShow] = useState<boolean>(false);
   const [modalOrderTypeShow, setModalOrderTypeShow] = useState<boolean>(false);
   const [arrangeTheInfo] = useRecoilState(arrangeTheInfoState);
-  const [orders, setOrders] = useRecoilState(ordersState);
+  const orders = useRecoilValue(ordersState);
   const [idSelectedDelete, setIdSelectedDelete] = useState<number | string>();
-
-  useEffect(() => {
-    setOrders(WAITING_ORDER_LIST);
-  }, []);
 
   return (
     <div>

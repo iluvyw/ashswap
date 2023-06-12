@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import ModalCancelOrder from './ModalCancelOrder';
 import ModalMore from './ModalMore';
 import ModalOrderType from './ModalOrderType';
 import { CloseIcon, EditIcon, MoreIcon } from '@/assets';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { futuresState } from '@/recoil/states/futuresState';
 import { arrangeFutureInfoState } from '@/recoil/states/arrangeFutureInfo';
 import ModalEditOrder from './ModalEditOrder';
-import { WAITING_FUTURE_LIST } from '@/api/fakeData';
 
 export default function WaitingFuture() {
   const [modalCancelShow, setModalCancelShow] = useState<boolean>(false);
@@ -16,12 +15,8 @@ export default function WaitingFuture() {
   const [modalOrderTypeShow, setModalOrderTypeShow] = useState<boolean>(false);
   const [modalEditOrder, setModalEditOrder] = useState<boolean>(false);
   const [arrangeFutureInfo] = useRecoilState(arrangeFutureInfoState);
-  const [futures, setFutures] = useRecoilState(futuresState);
+  const futures = useRecoilValue(futuresState);
   const [idSelectedDelete, setIdSelectedDelete] = useState<number | string>();
-
-  useEffect(() => {
-    setFutures(WAITING_FUTURE_LIST);
-  }, []);
 
   return (
     <div>
