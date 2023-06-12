@@ -132,7 +132,7 @@ export const WAITING_FUTURE_LIST: WaitingFuture[] = [
     leverage: 2,
   },
   {
-    id: 1,
+    id: 2,
     type: OrderType.SHORT,
     token: {
       token: 'ASH',
@@ -167,7 +167,7 @@ export const WAITING_FUTURE_LIST: WaitingFuture[] = [
     leverage: 5,
   },
   {
-    id: 1,
+    id: 3,
     type: OrderType.LONG,
     token: {
       token: 'ASH',
