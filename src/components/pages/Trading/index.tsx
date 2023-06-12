@@ -66,7 +66,7 @@ export default function Trading() {
         </div>
         <div
           className={classnames(
-            'card relative ml-16 flex w-60 flex-col bg-[#FDFDFF]/60 bg-blackBg duration-700 ease-in-out'
+            'card relative ml-16 hidden w-60 flex-col bg-[#FDFDFF]/60 bg-blackBg duration-700 ease-in-out sm:flex'
           )}
         >
           <div className="w-40">
