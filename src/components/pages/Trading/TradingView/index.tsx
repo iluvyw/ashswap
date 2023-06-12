@@ -13,7 +13,6 @@ import {
 } from '@/assets';
 import { modalSearchState } from '@/recoil/states/modalSearchState';
 import FavoriteButton from './FavoriteButton';
-import { CHART_DATA } from '@/api/fakeData';
 import Chart from './Chart';
 
 export type PairToken = {
