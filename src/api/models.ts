@@ -144,3 +144,9 @@ export type ChartItem = {
   low: number;
   close: number;
 };
+
+export type ChartData = {
+  mainToken: string;
+  comparedToken: string;
+  data: ChartItem[];
+};

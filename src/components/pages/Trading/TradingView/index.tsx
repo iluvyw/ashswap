@@ -122,7 +122,10 @@ export default function TradingView() {
 
       {pairToken && (
         <div className="h-[500px] pb-8">
-          <Chart data={CHART_DATA} />
+          <Chart
+            mainToken={pairToken.mainToken.token}
+            comparedToken={pairToken.comparedToken.token}
+          />
         </div>
       )}
     </div>

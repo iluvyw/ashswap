@@ -1,12 +1,13 @@
-import { ChartItem } from '@/api/models';
+import { CHART_DATA } from '@/api/fakeData';
 import { ColorType, createChart, CrosshairMode } from 'lightweight-charts';
 import React, { useEffect, useRef } from 'react';
 
 type ChartProps = {
-  data: ChartItem[];
+  mainToken: string;
+  comparedToken: string;
 };
 
-export default function Chart({ data }: ChartProps) {
+export default function Chart({ mainToken, comparedToken }: ChartProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,7 +60,12 @@ export default function Chart({ data }: ChartProps) {
       wickUpColor: '#05C9A100', //transparent
     });
 
-    candleSeries.setData(data);
+    const data = CHART_DATA.find(
+      data =>
+        data.mainToken === mainToken && data.comparedToken === comparedToken
+    );
+
+    candleSeries.setData(data?.data || []);
 
     window.addEventListener('resize', handleResize);
 
@@ -68,7 +74,7 @@ export default function Chart({ data }: ChartProps) {
 
       chart.remove();
     };
-  }, [data]);
+  }, [mainToken, comparedToken]);
 
   return <div className="h-full w-full" ref={chartContainerRef} />;
 }
