@@ -305,7 +305,7 @@ export default function CreateOrder() {
                 className="z-10 cursor-pointer"
                 onClick={handleTabOpening}
               />
-              <div className="absolute -top-[36%] left-0 z-10 flex w-full items-end gap-1">
+              <div className="absolute -top-[36%] left-0 z-10 flex w-full items-end justify-center gap-1">
                 <div
                   className="group relative cursor-pointer"
                   onClick={() => handleQuickSetInputSpend(25)}
