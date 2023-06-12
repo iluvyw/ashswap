@@ -14,13 +14,15 @@ import CreateOrder from './CreateOrder';
 import ModalSearch from './ModalSearch';
 import CreateFuture from './CreateFuture';
 import WaitingFuture from './WaitingFuture';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { waitingTabState } from '@/recoil/states/waitingTabState';
 import { featureState } from '@/recoil/states/featureState';
 
 export default function Trading() {
   const [isCollapsedOrderBook, setIsCollapsedOrderBook] =
     useState<boolean>(false);
   const feature = useRecoilValue(featureState);
+  const [waitingTab, setWaitingTab] = useRecoilState(waitingTabState);
 
   return (
     <div className="flex w-full sm:flex-col sm:gap-5">
@@ -32,17 +34,19 @@ export default function Trading() {
           <div className="my-5 flex">
             <h3
               className={classnames(
-                'mr-8 text-lg font-bold',
-                feature === 'TRADE' ? 'text-black' : 'text-disabled'
+                'mr-8 cursor-pointer text-lg font-bold',
+                waitingTab === 'LIMIT' ? 'text-black' : 'text-disabled'
               )}
+              onClick={() => setWaitingTab('LIMIT')}
             >
               Limit Orders
             </h3>
             <h3
               className={classnames(
-                'mr-8 text-lg font-bold',
-                feature === 'FUTURE' ? 'text-black' : 'text-disabled'
+                'mr-8 cursor-pointer text-lg font-bold',
+                waitingTab === 'FUTURE' ? 'text-black' : 'text-disabled'
               )}
+              onClick={() => setWaitingTab('FUTURE')}
             >
               Long - Short
             </h3>
@@ -50,8 +54,8 @@ export default function Trading() {
               Trade History
             </h3>
           </div>
-          {feature === 'TRADE' && <WaitingOrder />}
-          {feature === 'FUTURE' && <WaitingFuture />}
+          {waitingTab === 'LIMIT' && <WaitingOrder />}
+          {waitingTab === 'FUTURE' && <WaitingFuture />}
         </div>
         <div
           className="absolute -right-3 top-6 h-6 w-6 cursor-pointer sm:hidden"
