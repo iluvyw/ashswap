@@ -6,7 +6,6 @@ import {
   SearchInformation,
   WalletBalance,
   OrderDetails,
-  ChartItem,
   ChartData,
 } from './models';
 import coinASH from 'src/assets/imgs/coin-ash.png';

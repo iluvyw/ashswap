@@ -24,7 +24,7 @@ export default function Trading() {
 
   return (
     <div className="flex w-full sm:flex-col sm:gap-5">
-      <div className="card relative z-10 flex-1 sm:overflow-x-scroll">
+      <div className="card relative z-10 flex-1 sm:flex sm:overflow-x-scroll">
         <div className="w-full sm:w-fit">
           <TradingView />
         </div>
@@ -63,6 +63,23 @@ export default function Trading() {
             focusSrc={ArrowCircleLeftIcon}
             className={!isCollapsedOrderBook ? 'rotate-180' : ''}
           />
+        </div>
+        <div
+          className={classnames(
+            'card relative ml-16 flex w-60 flex-col bg-[#FDFDFF]/60 bg-blackBg duration-700 ease-in-out'
+          )}
+        >
+          <div className="w-40">
+            <OrderBook />
+          </div>
+          <span
+            className={classnames(
+              'absolute top-12 -right-5 rotate-90 text-sm font-bold text-disabled duration-700 ease-in-out',
+              isCollapsedOrderBook ? 'opacity-100' : 'opacity-0'
+            )}
+          >
+            Orderbook
+          </span>
         </div>
       </div>
       <div
