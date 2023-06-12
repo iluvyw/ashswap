@@ -136,3 +136,11 @@ export type ArrangeFutureItem = {
 };
 
 export type Leverage = 2 | 5 | 15 | 20 | 30 | 40 | 50;
+
+export type ChartItem = {
+  time: string;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+};

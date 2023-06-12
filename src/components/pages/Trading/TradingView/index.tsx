@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { StaticImageData } from 'next/image';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { limitOrderState } from '@/recoil/store';
 import Icon from '@/components/Icon';
-import { AdvancedRealTimeChartProps } from 'react-ts-tradingview-widgets/dist/components/AdvancedRealTimeChart';
 import {
   Arrow1Icon,
   Arrow2Icon,
@@ -15,14 +13,8 @@ import {
 } from '@/assets';
 import { modalSearchState } from '@/recoil/states/modalSearchState';
 import FavoriteButton from './FavoriteButton';
-
-const AdvancedRealTimeChart = dynamic<AdvancedRealTimeChartProps>(
-  () =>
-    import('react-ts-tradingview-widgets').then(
-      module => module.AdvancedRealTimeChart
-    ),
-  { ssr: false }
-);
+import { CHART_DATA } from '@/api/fakeData';
+import Chart from './Chart';
 
 export type PairToken = {
   mainToken: {
@@ -57,10 +49,6 @@ export default function TradingView() {
       mainToken: { ...prevPair.comparedToken },
       comparedToken: { ...prevPair.mainToken },
     }));
-  }
-
-  function getSymbolTrading() {
-    return `CRYPTOCAP:${pairToken.mainToken.token}/CRYPTOCAP:${pairToken.comparedToken.token}`;
   }
 
   useEffect(() => {
@@ -134,19 +122,7 @@ export default function TradingView() {
 
       {pairToken && (
         <div className="h-[500px] pb-8">
-          <AdvancedRealTimeChart
-            symbol={getSymbolTrading()}
-            theme="light"
-            interval="5"
-            style="7"
-            hide_side_toolbar={true}
-            hide_top_toolbar={true}
-            hide_legend={true}
-            autosize={true}
-            withdateranges={false}
-            disabled_features={['adaptive_logo']}
-            container_id="tradingview_e6d2a"
-          ></AdvancedRealTimeChart>
+          <Chart data={CHART_DATA} />
         </div>
       )}
     </div>
