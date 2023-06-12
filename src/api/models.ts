@@ -50,7 +50,7 @@ export type WaitingFuture = {
   marketPrice: number;
   size: SystemCurrency;
   collateral: SystemCurrency;
-  leverage: number;
+  leverage: Leverage;
 };
 
 export type OrderBookItem = {

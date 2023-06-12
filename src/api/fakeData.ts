@@ -7,86 +7,201 @@ import {
   WalletBalance,
   OrderDetails,
   ChartData,
+  WaitingFuture,
+  OrderType,
+  WaitingOrder,
 } from './models';
 import coinASH from 'src/assets/imgs/coin-ash.png';
 import coinEGLD from 'src/assets/imgs/coin-egld.png';
 import coinBNB from 'src/assets/imgs/coin-bnb.png';
 import coinUSDT from 'src/assets/imgs/coin-usdt.png';
 
-// export const WAITING_ORDER_LIST: WaitingOrder[] = [
-//   {
-//     time: 1677835884886,
-//     type: OrderType.LIMIT_ORDER,
-//     action: OrderAction.BUY,
-//     pair: 'EGLD-ASH',
-//     price: {
-//       token: 'ASH',
-//       value: 11111.12,
-//     },
-//     amount: {
-//       token: 'EGLD',
-//       value: 212.213,
-//     },
-//     valueUSDC: {
-//       token: 'USDC',
-//       value: 890.19,
-//     },
-//   },
-//   {
-//     time: 1677835884886,
-//     type: OrderType.LIMIT_ORDER,
-//     action: OrderAction.SELL,
-//     pair: 'BTC-USDT',
-//     price: {
-//       token: 'USDT',
-//       value: 11111.12,
-//     },
-//     amount: {
-//       token: 'BTC',
-//       value: 212.213,
-//     },
-//     valueUSDC: {
-//       token: 'USDC',
-//       value: 890.19,
-//     },
-//   },
-//   {
-//     time: 1677835884886,
-//     type: OrderType.LIMIT_ORDER,
-//     action: OrderAction.BUY,
-//     pair: 'EGLD-ASH',
-//     price: {
-//       token: 'ASH',
-//       value: 11111.12,
-//     },
-//     amount: {
-//       token: 'EGLD',
-//       value: 212.213,
-//     },
-//     valueUSDC: {
-//       token: 'USDC',
-//       value: 890.19,
-//     },
-//   },
-//   {
-//     time: 1677835884886,
-//     type: OrderType.LIMIT_ORDER,
-//     action: OrderAction.BUY,
-//     pair: 'EGLD-ASH',
-//     price: {
-//       token: 'ASH',
-//       value: 11111.12,
-//     },
-//     amount: {
-//       token: 'EGLD',
-//       value: 212.213,
-//     },
-//     valueUSDC: {
-//       token: 'USDC',
-//       value: 890.19,
-//     },
-//   },
-// ];
+export const WAITING_ORDER_LIST: WaitingOrder[] = [
+  {
+    id: 1,
+    time: 1677835884886,
+    type: OrderType.LIMIT_ORDER,
+    action: OrderAction.BUY,
+    pair: 'EGLD-ASH',
+    price: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    amount: {
+      token: 'EGLD',
+      value: 212.213,
+    },
+    valueUSDC: {
+      token: 'USDC',
+      value: 890.19,
+    },
+  },
+  {
+    id: 2,
+    time: 1677835884886,
+    type: OrderType.LIMIT_ORDER,
+    action: OrderAction.SELL,
+    pair: 'BTC-USDT',
+    price: {
+      token: 'USDT',
+      value: 11111.12,
+    },
+    amount: {
+      token: 'BTC',
+      value: 212.213,
+    },
+    valueUSDC: {
+      token: 'USDC',
+      value: 890.19,
+    },
+  },
+  {
+    id: 3,
+    time: 1677835884886,
+    type: OrderType.LIMIT_ORDER,
+    action: OrderAction.BUY,
+    pair: 'EGLD-ASH',
+    price: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    amount: {
+      token: 'EGLD',
+      value: 212.213,
+    },
+    valueUSDC: {
+      token: 'USDC',
+      value: 890.19,
+    },
+  },
+  {
+    id: 4,
+    time: 1677835884886,
+    type: OrderType.LIMIT_ORDER,
+    action: OrderAction.BUY,
+    pair: 'EGLD-ASH',
+    price: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    amount: {
+      token: 'EGLD',
+      value: 212.213,
+    },
+    valueUSDC: {
+      token: 'USDC',
+      value: 890.19,
+    },
+  },
+];
+
+export const WAITING_FUTURE_LIST: WaitingFuture[] = [
+  {
+    id: 1,
+    type: OrderType.LONG,
+    token: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    netPnl: {
+      fluctuate: 1.2,
+      amount: {
+        token: 'ASH',
+        value: 11111.12,
+      },
+    },
+    liqPrice: 8032,
+    takeProfit: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    stopLoss: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    entryPrice: 13422.01,
+    marketPrice: 13032.01,
+    size: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    collateral: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    leverage: 2,
+  },
+  {
+    id: 1,
+    type: OrderType.SHORT,
+    token: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    netPnl: {
+      fluctuate: 1.2,
+      amount: {
+        token: 'ASH',
+        value: 11111.12,
+      },
+    },
+    liqPrice: 8032,
+    takeProfit: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    stopLoss: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    entryPrice: 13422.01,
+    marketPrice: 13032.01,
+    size: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    collateral: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    leverage: 5,
+  },
+  {
+    id: 1,
+    type: OrderType.LONG,
+    token: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    netPnl: {
+      fluctuate: 1.2,
+      amount: {
+        token: 'ASH',
+        value: 11111.12,
+      },
+    },
+    liqPrice: 8032,
+    takeProfit: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    stopLoss: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    entryPrice: 13422.01,
+    marketPrice: 13032.01,
+    size: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    collateral: {
+      token: 'ASH',
+      value: 11111.12,
+    },
+    leverage: 15,
+  },
+];
 
 export const ORDER_BOOK: OrderBookList = {
   currentAverage: {
