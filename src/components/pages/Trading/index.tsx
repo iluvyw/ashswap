@@ -18,8 +18,9 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { waitingTabState } from '@/recoil/states/waitingTabState';
 import { featureState } from '@/recoil/states/featureState';
 import { futuresState } from '@/recoil/states/futuresState';
-import { WAITING_FUTURE_LIST, WAITING_ORDER_LIST } from '@/api/fakeData';
+import { API_ENDPOINT } from '@/api/fakeData';
 import { ordersState } from '@/recoil/states/ordersState';
+import axios from 'axios';
 
 export default function Trading() {
   const [isCollapsedOrderBook, setIsCollapsedOrderBook] =
@@ -29,9 +30,19 @@ export default function Trading() {
   const setFutures = useSetRecoilState(futuresState);
   const setOrders = useSetRecoilState(ordersState);
 
+  async function fetchLimits() {
+    const data = await axios.get(API_ENDPOINT + '/limit');
+    data.data && setOrders(data.data);
+  }
+
+  async function fetchFutures() {
+    const data = await axios.get(API_ENDPOINT + '/future');
+    data.data && setFutures(data.data);
+  }
+
   useEffect(() => {
-    setOrders(WAITING_ORDER_LIST);
-    setFutures(WAITING_FUTURE_LIST);
+    fetchLimits();
+    fetchFutures();
   }, []);
 
   return (

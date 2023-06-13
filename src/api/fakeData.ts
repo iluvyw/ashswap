@@ -950,3 +950,6 @@ export const CHART_DATA: ChartData[] = [
     ],
   },
 ];
+
+export const API_ENDPOINT =
+  'https://api.mockfly.dev/mocks/b13d8df9-e925-4829-bb46-44b6d21f5c12';

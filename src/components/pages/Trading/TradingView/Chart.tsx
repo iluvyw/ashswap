@@ -1,6 +1,8 @@
-import { CHART_DATA } from '@/api/fakeData';
+import { API_ENDPOINT } from '@/api/fakeData';
+import { ChartData } from '@/api/models';
 import { ColorType, createChart, CrosshairMode } from 'lightweight-charts';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
 
 type ChartProps = {
   mainToken: string;
@@ -9,6 +11,20 @@ type ChartProps = {
 
 export default function Chart({ mainToken, comparedToken }: ChartProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);
+  const [chartData, setChartData] = useState<ChartData | null>(null);
+
+  async function fetchData() {
+    const data = await axios.get(
+      API_ENDPOINT +
+        '/chart' +
+        `?mainToken=${mainToken}&comparedToken=${comparedToken}`
+    );
+    setChartData(data.data);
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, [mainToken, comparedToken]);
 
   useEffect(() => {
     if (chartContainerRef.current === null) {
@@ -60,12 +76,7 @@ export default function Chart({ mainToken, comparedToken }: ChartProps) {
       wickUpColor: '#05C9A100', //transparent
     });
 
-    const data = CHART_DATA.find(
-      data =>
-        data.mainToken === mainToken && data.comparedToken === comparedToken
-    );
-
-    candleSeries.setData(data?.data || []);
+    candleSeries.setData(chartData?.data || []);
 
     window.addEventListener('resize', handleResize);
 
@@ -74,7 +85,7 @@ export default function Chart({ mainToken, comparedToken }: ChartProps) {
 
       chart.remove();
     };
-  }, [mainToken, comparedToken]);
+  }, [chartData]);
 
   return <div className="h-full w-full" ref={chartContainerRef} />;
 }
