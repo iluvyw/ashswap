@@ -75,8 +75,10 @@ export default function Trading() {
               Trade History
             </h3>
           </div>
-          {waitingTab === 'LIMIT' && <WaitingOrder />}
-          {waitingTab === 'FUTURE' && <WaitingFuture />}
+          <div className="w-full min-w-[752px]">
+            {waitingTab === 'LIMIT' && <WaitingOrder />}
+            {waitingTab === 'FUTURE' && <WaitingFuture />}
+          </div>
         </div>
         <div
           className="absolute -right-3 top-6 h-6 w-6 cursor-pointer sm:hidden"
