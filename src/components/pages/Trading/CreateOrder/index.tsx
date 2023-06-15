@@ -29,9 +29,9 @@ export default function CreateOrder() {
   const walletBalance = useRecoilValue(userWalletBalance);
   const [orderType, setOrderType] = useState<'LIMIT' | 'MARKET'>('LIMIT');
   const [tabOpening, setTabOpening] = useState<'SELL' | 'BUY'>('BUY');
-  const [inputSpend, setInputSpend] = useState<number>(0);
-  const [inputBuy, setInputBuy] = useState<number>(0);
-  const [inputPrice, setInputPrice] = useState<number | null>();
+  const [inputSpend, setInputSpend] = useState<string>('');
+  const [inputBuy, setInputBuy] = useState<string>('');
+  const [inputPrice, setInputPrice] = useState<string | null>(null);
   const [coinUnitCalculated, setCoinUnitCalculated] = useState<string[]>([]);
   const [orders, setOrders] = useRecoilState(ordersState);
   const [isSwapped, setIsSwapped] = useState<boolean>(false);
@@ -56,47 +56,62 @@ export default function CreateOrder() {
 
   function handleQuickSetInputSpend(percent: number) {
     handleChangeValueSpend(
-      (getBalanceByToken(limitOrder.sell.token) * percent) / 100
+      ((getBalanceByToken(limitOrder.sell.token) * percent) / 100).toString()
     );
   }
 
   function handleSwitchCoinUnitCalculated() {
     setCoinUnitCalculated(prev => [prev[1], prev[0]]);
-    const _rate = !isSwapped ? 1 / (inputPrice || rate) : inputPrice || rate;
+    const _inputBuy = parseFloat(inputBuy);
+    const _inputSpend = parseFloat(inputSpend);
+    const _inputPrice =
+      typeof inputPrice === 'string' ? parseFloat(inputPrice) : inputPrice;
+    const _rate = !isSwapped ? 1 / (_inputPrice || rate) : _inputPrice || rate;
     if (tabOpening === 'BUY') {
-      setInputSpend(inputBuy * _rate);
+      setInputSpend((_inputBuy * _rate).toString());
     } else {
-      setInputBuy(inputSpend * _rate);
+      setInputBuy((_inputSpend * _rate).toString());
     }
     setIsSwapped(prev => !prev);
   }
 
-  function handleChangeValuePrice(value: number) {
+  function handleChangeValuePrice(value: string) {
     setInputPrice(value);
-    const _rate = isSwapped ? 1 / value : value;
+    const _rate = isSwapped ? 1 / parseFloat(value) : parseFloat(value);
     if (tabOpening === 'BUY') {
-      setInputSpend(inputBuy * _rate);
+      setInputSpend((parseFloat(inputBuy) * _rate).toString());
     } else {
-      setInputBuy(inputSpend * _rate);
+      setInputBuy((parseFloat(inputSpend) * _rate).toString());
     }
   }
 
-  function handleChangeValueSpend(value: number) {
+  function handleChangeValueSpend(value: string) {
     setInputSpend(value);
-    const _rate = isSwapped ? 1 / (inputPrice || rate) : inputPrice || rate;
-    if (tabOpening === 'BUY') setInputBuy(value / (_rate || rate));
-    else setInputBuy(value * (_rate || rate));
+    const _inputPrice =
+      typeof inputPrice === 'string' ? parseFloat(inputPrice) : inputPrice;
+    const _rate = isSwapped ? 1 / (_inputPrice || rate) : _inputPrice || rate;
+    if (tabOpening === 'BUY')
+      setInputBuy((parseFloat(value) / (_rate || rate)).toString());
+    else setInputBuy((parseFloat(value) * (_rate || rate)).toString());
   }
 
-  function handleChangeValueBuy(value: number) {
+  function handleChangeValueBuy(value: string) {
     setInputBuy(value);
-    const _rate = isSwapped ? 1 / (inputPrice || rate) : inputPrice || rate;
-    if (tabOpening === 'BUY') setInputSpend(value * (_rate || rate));
-    else setInputSpend(value / (_rate || rate));
+    const _inputPrice =
+      typeof inputPrice === 'string' ? parseFloat(inputPrice) : inputPrice;
+    const _rate = isSwapped ? 1 / (_inputPrice || rate) : _inputPrice || rate;
+    if (tabOpening === 'BUY')
+      setInputSpend((parseFloat(value) * (_rate || rate)).toString());
+    else setInputSpend((parseFloat(value) / (_rate || rate)).toString());
   }
 
   function checkDisableActionButton() {
-    if (!inputBuy || inputBuy == 0 || !inputSpend || inputSpend == 0)
+    if (
+      !inputBuy ||
+      parseFloat(inputBuy) == 0 ||
+      !inputSpend ||
+      parseFloat(inputSpend) == 0
+    )
       return true;
     return false;
   }
@@ -110,15 +125,17 @@ export default function CreateOrder() {
       pair: tabOpening === 'BUY' ? 'BNB-EGLD' : 'EGLD-BNB',
       price: {
         token: coinUnitCalculated[1],
-        value: inputPrice ?? 0.0,
+        value: inputPrice ? parseFloat(inputPrice) : 0.0,
       },
       amount: {
         token: 'EGLD',
-        value: tabOpening === 'BUY' ? inputBuy : inputSpend,
+        value:
+          tabOpening === 'BUY' ? parseFloat(inputBuy) : parseFloat(inputSpend),
       },
       valueUSDC: {
         token: 'BNB',
-        value: tabOpening === 'BUY' ? inputSpend : inputBuy,
+        value:
+          tabOpening === 'BUY' ? parseFloat(inputSpend) : parseFloat(inputBuy),
       },
     };
 
@@ -126,7 +143,7 @@ export default function CreateOrder() {
   }
 
   function setMarketPrice() {
-    handleChangeValuePrice(rate);
+    handleChangeValuePrice(rate.toString());
   }
 
   useEffect(() => {
@@ -137,41 +154,44 @@ export default function CreateOrder() {
   }, [limitOrder]);
 
   useEffect(() => {
-    setInputBuy(0);
-    setInputSpend(0);
+    setInputBuy('');
+    setInputSpend('');
   }, [tabOpening]);
 
   return (
     <div>
       <div className="card w-full bg-[#FDFDFF]/60">
         <ul className="flex flex-wrap gap-6 text-center text-sm font-bold uppercase">
-          <li onClick={() => setOrderType('LIMIT')}>
-            <a
-              href="#"
+          <li
+            onClick={() => {
+              setOrderType('LIMIT');
+              setInputPrice('');
+            }}
+          >
+            <button
               className={classnames(
-                'inline-block',
+                'inline-block uppercase tracking-wider',
                 orderType === 'LIMIT' ? 'active' : 'text-gray-400'
               )}
               aria-current="page"
             >
               Limit
-            </a>
+            </button>
           </li>
           <li
             onClick={() => {
               setOrderType('MARKET');
-              setInputPrice(rate);
+              setInputPrice(rate.toString());
             }}
           >
-            <a
-              href="#"
+            <button
               className={classnames(
-                'inline-block',
+                'inline-block uppercase tracking-wider',
                 orderType === 'MARKET' ? 'active' : 'text-gray-400'
               )}
             >
               Market
-            </a>
+            </button>
           </li>
           {/* <li>
             <a
@@ -185,28 +205,25 @@ export default function CreateOrder() {
         <div>
           <ul className="mt-7 flex w-full gap-1 rounded-md bg-blackBg p-1 text-sm uppercase">
             <li className="w-1/2" onClick={handleTabOpening}>
-              <a
-                href="#"
+              <button
                 className={classnames(
-                  'active flex h-8 w-full items-center justify-center rounded-md font-bold duration-300 ease-in-out',
+                  'active flex h-8 w-full items-center justify-center rounded-md font-bold uppercase duration-300 ease-in-out',
                   tabOpening === 'BUY' ? 'bg-success text-white' : null
                 )}
-                aria-current="page"
               >
                 Buy {getMainTokenHandling().token}
-              </a>
+              </button>
             </li>
 
             <li className="w-1/2" onClick={handleTabOpening} data-cy="sell-btn">
-              <a
-                href="#"
+              <button
                 className={classnames(
-                  'flex h-8 w-full items-center justify-center rounded-md font-bold duration-300 ease-in-out',
+                  'flex h-8 w-full items-center justify-center rounded-md font-bold uppercase duration-300 ease-in-out',
                   tabOpening === 'SELL' ? 'bg-danger text-white' : null
                 )}
               >
                 SELL {getMainTokenHandling().token}
-              </a>
+              </button>
             </li>
           </ul>
 
@@ -254,9 +271,7 @@ export default function CreateOrder() {
                     className="h-16 w-full pr-20 pt-5 text-right text-xl"
                     placeholder="0.0"
                     value={inputPrice ?? ''}
-                    onChange={e =>
-                      handleChangeValuePrice(e.target.valueAsNumber)
-                    }
+                    onChange={e => handleChangeValuePrice(e.target.value)}
                   />
                 </div>
               </div>
@@ -286,7 +301,7 @@ export default function CreateOrder() {
                 type="number"
                 id="input-group-1"
                 value={inputSpend}
-                onChange={e => handleChangeValueSpend(e.target.valueAsNumber)}
+                onChange={e => handleChangeValueSpend(e.target.value)}
                 className="h-16 w-24 flex-auto p-2.5 text-right text-2xl"
                 placeholder="0.0"
                 name="spend"
@@ -385,7 +400,7 @@ export default function CreateOrder() {
                 id="input-group-1"
                 className="h-16 w-24 flex-auto p-2.5 text-right text-2xl"
                 placeholder="0.0"
-                onChange={e => handleChangeValueBuy(e.target.valueAsNumber)}
+                onChange={e => handleChangeValueBuy(e.target.value)}
                 value={inputBuy}
                 name="buy"
               />

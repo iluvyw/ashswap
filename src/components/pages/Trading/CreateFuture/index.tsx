@@ -20,9 +20,10 @@ import { modalSearchState } from '@/recoil/states/modalSearchState';
 import { futureOrderValue } from '@/recoil/states/futureOrderState';
 import LeverageInput from './LeverageInput';
 import { futuresState } from '@/recoil/states/futuresState';
+import { validate } from '@/utils/validate';
 
 export default function CreateFuture() {
-  const rate = 0.0002; // 1 BNB = 0.00035 EGLD
+  const rate = '0.0002'; // 1 BNB = 0.00035 EGLD
   const entryPrice = 13422.01;
   const marketPrice = 13032.01;
   const fluctuatingRates = [10, 25, 50, 75, 100];
@@ -32,13 +33,13 @@ export default function CreateFuture() {
   const walletBalance = useRecoilValue(userWalletBalance);
   const [tabOpening, setTabOpening] = useState<'SHORT' | 'LONG'>('LONG');
   const [activeInput, setActiveInput] = useState<'TP' | 'SL' | null>(null);
-  const [collateralSpend, setCollateralSpend] = useState<number>(0);
+  const [collateralSpend, setCollateralSpend] = useState<string>('');
   const [leverage, setLeverage] = useState<Leverage>(2);
-  const [inputTp, setInputTp] = useState<number | undefined>(undefined);
-  const [inputSl, setInputSl] = useState<number | undefined>(undefined);
+  const [inputTp, setInputTp] = useState<string | undefined>(undefined);
+  const [inputSl, setInputSl] = useState<string | undefined>(undefined);
   const [futureOrders, setFutureOrders] = useRecoilState(futuresState);
 
-  const [inputPrice, setInputPrice] = useState<number | null>();
+  const [inputPrice, setInputPrice] = useState<string>('');
   const setIsShow = useSetRecoilState(modalSearchState);
 
   function getBalanceByToken(token: string) {
@@ -54,24 +55,25 @@ export default function CreateFuture() {
     setFutureOrder(futureOrder);
   }
 
-  function handleChangeValuePrice(value: number) {
-    setInputPrice(value);
+  function handleChangeValuePrice(value: string) {
+    validate(value) && setInputPrice(value);
   }
 
-  function handleChangeCollateralSpend(value: number) {
-    setCollateralSpend(value);
+  function handleChangeCollateralSpend(value: string) {
+    validate(value) && setCollateralSpend(value);
   }
 
-  function handleChangeValueTakeProfit(value: number) {
-    setInputTp(value);
+  function handleChangeValueTakeProfit(value: string) {
+    validate(value) && setInputTp(value);
   }
 
-  function handleChangeValueStopLoss(value: number) {
-    setInputSl(value);
+  function handleChangeValueStopLoss(value: string) {
+    validate(value) && setInputSl(value);
   }
 
   function checkDisableActionButton() {
-    if (!collateralSpend || collateralSpend == 0 || !inputPrice) return true;
+    if (!collateralSpend || parseFloat(collateralSpend) == 0 || !inputPrice)
+      return true;
     return false;
   }
 
@@ -84,17 +86,17 @@ export default function CreateFuture() {
         fluctuate: 1.98,
         amount: {
           token: futureOrder.collateral.token,
-          value: collateralSpend,
+          value: parseFloat(collateralSpend),
         },
       },
       liqPrice: ORDER_DETAILS.liqPrice,
       takeProfit: {
         token: futureOrder.collateral.token,
-        value: inputTp || 0,
+        value: inputTp ? parseFloat(inputTp) : 0,
       },
       stopLoss: {
         token: futureOrder.collateral.token,
-        value: inputSl || 0,
+        value: inputSl ? parseFloat(inputSl) : 0,
       },
       entryPrice: entryPrice,
       marketPrice: marketPrice,
@@ -104,7 +106,7 @@ export default function CreateFuture() {
       },
       collateral: {
         token: futureOrder.collateral.token,
-        value: collateralSpend,
+        value: parseFloat(collateralSpend),
         image: futureOrder.collateral.image,
       },
       leverage: leverage,
@@ -118,7 +120,7 @@ export default function CreateFuture() {
   }
 
   function toggleTpCheckbox() {
-    inputTp === undefined ? setInputTp(0) : setInputTp(undefined);
+    inputTp === undefined ? setInputTp('0') : setInputTp(undefined);
     if (activeInput === 'TP') {
       inputSl !== undefined ? setActiveInput('SL') : setActiveInput(null);
     } else {
@@ -127,7 +129,7 @@ export default function CreateFuture() {
   }
 
   function toggleSlCheckbox() {
-    inputSl === undefined ? setInputSl(0) : setInputSl(undefined);
+    inputSl === undefined ? setInputSl('0') : setInputSl(undefined);
     if (activeInput === 'SL') {
       inputTp !== undefined ? setActiveInput('TP') : setActiveInput(null);
     } else {
@@ -136,7 +138,7 @@ export default function CreateFuture() {
   }
 
   useEffect(() => {
-    setCollateralSpend(0);
+    setCollateralSpend('0');
     setLeverage(2);
     setInputTp(undefined);
     setInputSl(undefined);
@@ -147,16 +149,14 @@ export default function CreateFuture() {
       <div className="card w-full bg-[#FDFDFF]/60">
         <ul className="flex flex-wrap gap-6 text-center text-sm font-bold uppercase">
           <li onClick={() => setOrderType('LIMIT')}>
-            <a
-              href="#"
+            <button
               className={classnames(
-                'inline-block',
+                'inline-block uppercase tracking-wider',
                 orderType === 'LIMIT' ? 'active' : 'text-gray-400'
               )}
-              aria-current="page"
             >
               Limit
-            </a>
+            </button>
           </li>
           <li
             onClick={() => {
@@ -164,15 +164,14 @@ export default function CreateFuture() {
               setInputPrice(rate);
             }}
           >
-            <a
-              href="#"
+            <button
               className={classnames(
-                'inline-block',
+                'inline-block uppercase tracking-wider',
                 orderType === 'MARKET' ? 'active' : 'text-gray-400'
               )}
             >
               Market
-            </a>
+            </button>
           </li>
           {/* <li>
             <a
@@ -186,28 +185,25 @@ export default function CreateFuture() {
         <div>
           <ul className="mt-7 flex w-full gap-1 rounded-md bg-blackBg p-1 text-sm uppercase">
             <li className="w-1/2" onClick={handleTabOpening}>
-              <a
-                href="#"
+              <button
                 className={classnames(
-                  'active flex h-8 w-full items-center justify-center rounded-md font-bold duration-300 ease-in-out',
+                  'active flex h-8 w-full items-center justify-center rounded-md font-bold uppercase duration-300 ease-in-out',
                   tabOpening === 'LONG' ? 'bg-success text-white' : null
                 )}
-                aria-current="page"
               >
                 LONG {futureOrder.buy.token}
-              </a>
+              </button>
             </li>
 
             <li className="w-1/2" onClick={handleTabOpening} data-cy="sell-btn">
-              <a
-                href="#"
+              <button
                 className={classnames(
-                  'flex h-8 w-full items-center justify-center rounded-md font-bold duration-300 ease-in-out',
+                  'flex h-8 w-full items-center justify-center rounded-md font-bold uppercase duration-300 ease-in-out',
                   tabOpening === 'SHORT' ? 'bg-danger text-white' : null
                 )}
               >
                 SHORT {futureOrder.buy.token}
-              </a>
+              </button>
             </li>
           </ul>
 
@@ -252,9 +248,7 @@ export default function CreateFuture() {
                     className="h-16 w-full pr-20 pt-5 text-right text-xl"
                     placeholder="0.0"
                     value={inputPrice ?? ''}
-                    onChange={e =>
-                      handleChangeValuePrice(e.target.valueAsNumber)
-                    }
+                    onChange={e => handleChangeValuePrice(e.target.value)}
                   />
                 </div>
               </div>
@@ -287,9 +281,7 @@ export default function CreateFuture() {
                 type="number"
                 id="input-group-1"
                 value={collateralSpend}
-                onChange={e =>
-                  handleChangeCollateralSpend(e.target.valueAsNumber)
-                }
+                onChange={e => handleChangeCollateralSpend(e.target.value)}
                 className="h-16 w-24 flex-auto p-2.5 text-right text-2xl"
                 placeholder="0.0"
                 name="collateral"
@@ -348,7 +340,7 @@ export default function CreateFuture() {
                       type="number"
                       value={inputTp}
                       onChange={e =>
-                        handleChangeValueTakeProfit(e.target.valueAsNumber)
+                        handleChangeValueTakeProfit(e.target.value)
                       }
                       placeholder="0.00"
                       className="transparent-input mr-1 p-0 text-right text-lg"
@@ -390,9 +382,7 @@ export default function CreateFuture() {
                     <input
                       type="number"
                       value={inputSl}
-                      onChange={e =>
-                        handleChangeValueStopLoss(e.target.valueAsNumber)
-                      }
+                      onChange={e => handleChangeValueStopLoss(e.target.value)}
                       placeholder="0.00"
                       className="transparent-input mr-1 p-0 text-right text-lg"
                     />
