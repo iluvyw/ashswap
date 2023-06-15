@@ -149,3 +149,43 @@ svg:hover circle {
 .hide {
   display: none !important;
 }
+
+input[type='range'] {
+  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+  width: 100%; /* Specific width is required for Firefox. */
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  outline: none;
+  border: none;
+  background-color: transparent;
+}
+
+input[type='range']:focus {
+  outline: none;
+}
+
+input[type='range']:hover {
+  outline: none;
+  border: none;
+}
+
+input[type='range']::-ms-track {
+  width: 100%;
+  cursor: pointer;
+  /* Hides the slider so custom styles can be added */
+  background: transparent;
+  border-color: transparent;
+  color: transparent;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 12px;
+  width: 12px;
+  background: #5d5fef;
+  transform: rotate(45deg);
+  cursor: pointer;
+  border-radius: 0.25rem;
+}

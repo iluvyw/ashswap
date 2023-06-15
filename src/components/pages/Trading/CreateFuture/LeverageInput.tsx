@@ -1,5 +1,5 @@
 import { Leverage } from '@/api/models';
-import { BikeIcon, Diamond1Icon, DiamondIcon } from '@/assets';
+import { BikeIcon, Diamond1Icon } from '@/assets';
 import Image from 'next/image';
 import React from 'react';
 
@@ -40,21 +40,23 @@ export default function LeverageInput({
             />
           </div>
           <div className="absolute top-1/2 left-0 flex w-full -translate-y-1/2 items-center justify-between px-4">
-            {leveragePoints.map((point, index) => (
+            {leveragePoints.map(point => (
               <div
-                key={index}
+                key={point}
                 className="flex h-[14px] w-[14px] items-center justify-center"
               >
-                <Image
-                  key={index}
-                  src={point == leverage ? DiamondIcon : Diamond1Icon}
-                  width={point == leverage ? 14 : 8}
-                  height={point == leverage ? 14 : 8}
-                  alt="icon"
-                />
+                <Image src={Diamond1Icon} width={8} height={8} alt="icon" />
               </div>
             ))}
           </div>
+          <input
+            type="range"
+            min={0}
+            max={6}
+            onChange={e => setLeverage(leveragePoints[e.target.valueAsNumber])}
+            value={leveragePoints.indexOf(leverage)}
+            className="absolute top-1/2 left-0 flex h-0 w-full -translate-y-1/2 px-4"
+          />
         </div>
         <div className="relative flex w-full items-center justify-between px-4">
           {leveragePoints.map((point, index) => (

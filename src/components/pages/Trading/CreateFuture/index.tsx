@@ -23,7 +23,7 @@ import { futuresState } from '@/recoil/states/futuresState';
 import { validate } from '@/utils/validate';
 
 export default function CreateFuture() {
-  const rate = '0.0002'; // 1 BNB = 0.00035 EGLD
+  const rate = 0.0002; // 1 BNB = 0.00035 EGLD
   const entryPrice = 13422.01;
   const marketPrice = 13032.01;
   const fluctuatingRates = [10, 25, 50, 75, 100];
@@ -116,7 +116,7 @@ export default function CreateFuture() {
   }
 
   function setMarketPrice() {
-    handleChangeValuePrice(rate);
+    handleChangeValuePrice(rate.toString());
   }
 
   function toggleTpCheckbox() {
@@ -148,7 +148,12 @@ export default function CreateFuture() {
     <div>
       <div className="card w-full bg-[#FDFDFF]/60">
         <ul className="flex flex-wrap gap-6 text-center text-sm font-bold uppercase">
-          <li onClick={() => setOrderType('LIMIT')}>
+          <li
+            onClick={() => {
+              setOrderType('LIMIT');
+              setInputPrice('');
+            }}
+          >
             <button
               className={classnames(
                 'inline-block uppercase tracking-wider',
@@ -161,7 +166,7 @@ export default function CreateFuture() {
           <li
             onClick={() => {
               setOrderType('MARKET');
-              setInputPrice(rate);
+              setInputPrice(rate.toString());
             }}
           >
             <button
