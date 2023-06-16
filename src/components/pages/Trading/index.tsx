@@ -44,7 +44,7 @@ export default function Trading() {
   }
 
   async function fetchHistory() {
-    const data = await axios.get(API_ENDPOINT + '/future');
+    const data = await axios.get(API_ENDPOINT + '/history');
     data.data && setHistory(data.data);
   }
 

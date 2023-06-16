@@ -1,5 +1,7 @@
+import { API_ENDPOINT } from '@/api/fakeData';
 import { WaitingOrder } from '@/api/models';
 import { ordersState } from '@/recoil/states/ordersState';
+import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import Modal from 'src/components/Modal';
 
@@ -17,7 +19,23 @@ const ModalCancelOrder: React.FC<ModalCancelOrderProps> = ({
     return arr.filter(value => value.id != _id);
   }
 
-  const handleDeleted = () => {
+  const handleDeleted = async () => {
+    const data = {
+      action: 'delete',
+      id: idSelected,
+    };
+    const response = await axios.post(
+      `${API_ENDPOINT}/limit`,
+      JSON.stringify(data),
+      {
+        headers: {
+          Authorization: 'Bearer token',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    alert(response.data.msg);
     if (idSelected) setOrders(removeItemAtIndex(orders, idSelected));
     onClose();
   };

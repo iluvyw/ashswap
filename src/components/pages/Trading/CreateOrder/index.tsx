@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Icon from '@/components/Icon';
 import Collapsible from '@/components/Collapsible';
 import classnames from 'classnames';
-import { USD_FEE_ESTIMATED } from '@/api/fakeData';
+import { API_ENDPOINT, USD_FEE_ESTIMATED } from '@/api/fakeData';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { limitOrderValue, userWalletBalance } from '@/recoil/store';
 import {
@@ -21,6 +21,7 @@ import {
 import { WaitingOrder, OrderType, OrderAction } from '@/api/models';
 import { ordersState } from '@/recoil/states/ordersState';
 import { modalSearchState } from '@/recoil/states/modalSearchState';
+import axios from 'axios';
 
 export default function CreateOrder() {
   const rate = 0.0002; // 1 BNB = 0.00035 EGLD
@@ -116,7 +117,7 @@ export default function CreateOrder() {
     return false;
   }
 
-  function handleSubmitOrder() {
+  async function handleSubmitOrder() {
     const valueSubmit: WaitingOrder = {
       id: `ORDER${Date.now()} ${Math.floor(1000 + Math.random() * 9000)}`,
       time: Date.now(),
@@ -138,6 +139,22 @@ export default function CreateOrder() {
           tabOpening === 'BUY' ? parseFloat(inputSpend) : parseFloat(inputBuy),
       },
     };
+
+    const data = {
+      action: 'create',
+      value: valueSubmit,
+    };
+    const response = await axios.post(
+      `${API_ENDPOINT}/limit`,
+      JSON.stringify(data),
+      {
+        headers: {
+          Authorization: 'Bearer token',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    alert(response.data.msg);
 
     setOrders([valueSubmit, ...orders]);
   }

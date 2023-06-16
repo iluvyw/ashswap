@@ -8,7 +8,8 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import Modal from 'src/components/Modal';
-import { ORDER_DETAILS } from '@/api/fakeData';
+import { API_ENDPOINT, ORDER_DETAILS } from '@/api/fakeData';
+import axios from 'axios';
 
 type ModalCancelOrderProps = {
   onClose: () => void;
@@ -57,7 +58,24 @@ const ModalEditOrder: React.FC<ModalCancelOrderProps> = ({
     return tempArray;
   }
 
-  const handleUpdated = () => {
+  const handleUpdated = async () => {
+    const data = {
+      action: 'edit',
+      id: idSelected,
+      collateralSpend: futureOrder?.collateral,
+    };
+    const response = await axios.put(
+      `${API_ENDPOINT}/future`,
+      JSON.stringify(data),
+      {
+        headers: {
+          Authorization: 'Bearer token',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    alert(response.data.msg);
+
     if (idSelected)
       setFutureOrders(updateItemAtIndex(futureOrders, idSelected));
     onClose();

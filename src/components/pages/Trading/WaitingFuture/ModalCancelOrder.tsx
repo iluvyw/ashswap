@@ -1,5 +1,7 @@
+import { API_ENDPOINT } from '@/api/fakeData';
 import { WaitingFuture } from '@/api/models';
 import { futuresState } from '@/recoil/states/futuresState';
+import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import Modal from 'src/components/Modal';
 
@@ -17,7 +19,23 @@ const ModalCancelOrder: React.FC<ModalCancelOrderProps> = ({
     return arr.filter(value => value.id != _id);
   }
 
-  const handleDeleted = () => {
+  const handleDeleted = async () => {
+    const data = {
+      action: 'delete',
+      id: idSelected,
+    };
+    const response = await axios.post(
+      `${API_ENDPOINT}/future`,
+      JSON.stringify(data),
+      {
+        headers: {
+          Authorization: 'Bearer token',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    alert(response.data.msg);
+
     if (idSelected)
       setFutureOrders(removeItemAtIndex(futureOrders, idSelected));
     onClose();

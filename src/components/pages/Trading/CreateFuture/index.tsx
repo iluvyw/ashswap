@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Icon from '@/components/Icon';
 import Collapsible from '@/components/Collapsible';
 import classnames from 'classnames';
-import { ORDER_DETAILS } from '@/api/fakeData';
+import { API_ENDPOINT, ORDER_DETAILS } from '@/api/fakeData';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { userWalletBalance } from '@/recoil/store';
 import {
@@ -21,6 +21,7 @@ import { futureOrderValue } from '@/recoil/states/futureOrderState';
 import LeverageInput from './LeverageInput';
 import { futuresState } from '@/recoil/states/futuresState';
 import { validate } from '@/utils/validate';
+import axios from 'axios';
 
 export default function CreateFuture() {
   const rate = 0.0002; // 1 BNB = 0.00035 EGLD
@@ -77,7 +78,7 @@ export default function CreateFuture() {
     return false;
   }
 
-  function handleSubmitOrder() {
+  async function handleSubmitOrder() {
     const valueSubmit: WaitingFuture = {
       id: `ORDER${Date.now()} ${Math.floor(1000 + Math.random() * 9000)}`,
       type: tabOpening === 'LONG' ? OrderType.LONG : OrderType.SHORT,
@@ -111,6 +112,22 @@ export default function CreateFuture() {
       },
       leverage: leverage,
     };
+
+    const data = {
+      action: 'create',
+      value: valueSubmit,
+    };
+    const response = await axios.post(
+      `${API_ENDPOINT}/future`,
+      JSON.stringify(data),
+      {
+        headers: {
+          Authorization: 'Bearer token',
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    alert(response.data.msg);
 
     setFutureOrders([valueSubmit, ...futureOrders]);
   }
