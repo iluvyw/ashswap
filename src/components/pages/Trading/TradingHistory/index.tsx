@@ -56,7 +56,7 @@ export default function TradingHistory() {
             {history.length > 0
               ? history.map((order, i) => {
                   return (
-                    <tr key={i}>
+                    <tr key={i} className="h-[40px]">
                       {arrangeFutureInfo.items.map(value => {
                         if (!value.show) return null;
                         return value.Cell(order);

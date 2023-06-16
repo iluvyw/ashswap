@@ -61,7 +61,7 @@ export default function WaitingFuture() {
             {futures.length > 0
               ? futures.map((order, i) => {
                   return (
-                    <tr key={i}>
+                    <tr key={i} className="h-[40px]">
                       {arrangeFutureInfo.items.map(value => {
                         if (!value.show) return null;
                         return value.Cell(order);
