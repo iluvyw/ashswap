@@ -21,6 +21,8 @@ import { futuresState } from '@/recoil/states/futuresState';
 import { API_ENDPOINT } from '@/api/fakeData';
 import { ordersState } from '@/recoil/states/ordersState';
 import axios from 'axios';
+import { historyState } from '@/recoil/states/historyState';
+import TradingHistory from './TradingHistory';
 
 export default function Trading() {
   const [isCollapsedOrderBook, setIsCollapsedOrderBook] =
@@ -29,6 +31,7 @@ export default function Trading() {
   const [waitingTab, setWaitingTab] = useRecoilState(waitingTabState);
   const setFutures = useSetRecoilState(futuresState);
   const setOrders = useSetRecoilState(ordersState);
+  const setHistory = useSetRecoilState(historyState);
 
   async function fetchLimits() {
     const data = await axios.get(API_ENDPOINT + '/limit');
@@ -40,9 +43,15 @@ export default function Trading() {
     data.data && setFutures(data.data);
   }
 
+  async function fetchHistory() {
+    const data = await axios.get(API_ENDPOINT + '/future');
+    data.data && setHistory(data.data);
+  }
+
   useEffect(() => {
     fetchLimits();
     fetchFutures();
+    fetchHistory();
   }, []);
 
   return (
@@ -71,13 +80,20 @@ export default function Trading() {
             >
               Long - Short
             </h3>
-            <h3 className="mr-8 text-lg font-bold text-disabled">
+            <h3
+              className={classnames(
+                'mr-8 cursor-pointer text-lg font-bold',
+                waitingTab === 'HISTORY' ? 'text-black' : 'text-disabled'
+              )}
+              onClick={() => setWaitingTab('HISTORY')}
+            >
               Trade History
             </h3>
           </div>
           <div className="w-full min-w-[752px]">
             {waitingTab === 'LIMIT' && <WaitingOrder />}
             {waitingTab === 'FUTURE' && <WaitingFuture />}
+            {waitingTab === 'HISTORY' && <TradingHistory />}
           </div>
         </div>
         <div
